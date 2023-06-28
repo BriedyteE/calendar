@@ -1,0 +1,46 @@
+/* GLOBAL
+-------------------------------------------------------------------  */
+
+:root {
+  --primary-color: #0d7874;
+  --primary-lighter-color: #679289;
+  --secondary-color: #f4c095;
+  --black-color: #071e22;
+  --error-color: #ee2e31;
+  font-size: 18px;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+i {
+  color: var(--black-color);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Lato", sans-serif;
+  font-weight: 400;
+}
+
+p {
+  font-family: "Karla", sans-serif;
+  font-weight: 300;
+}
+
+a {
+  color: var(--primary-color);
+  border: var(--thin-border);
+}
+
+a:hover {
+  text-decoration: underline;
+}
