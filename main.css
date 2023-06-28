@@ -5,8 +5,12 @@
   --primary-color: #0d7874;
   --primary-lighter-color: #679289;
   --secondary-color: #f4c095;
+  --white-color: #fefefe;
+  --border-color: #e4e4e4;
   --black-color: #071e22;
   --error-color: #ee2e31;
+  --thin-border: 1px solid var(--border-color);
+  --border-radius: 5px;
   font-size: 18px;
 }
 
@@ -43,4 +47,27 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+/* WEEK GRID
+-------------------------------------------------------------------  */
+#week-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+}
+
+.day-column {
+  display: flex;
+  flex-direction: column;
+  border: var(--thin-border);
+}
+
+.cell {
+  border: var(--thin-border);
+  height: 50px;
+}
+
+.cell.current-day-header {
+  background-color: var(--primary-color);
+  color: var(--white-color);
 }
