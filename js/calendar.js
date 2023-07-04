@@ -1,3 +1,6 @@
+import { DAY_NAMES } from "./contants.js";
+import { createNewElement } from "./utils.js";
+
 const weekGrid = document.getElementById("week-grid");
 const currentDate = new Date();
 
@@ -14,15 +17,45 @@ const renderWeekView = () => {
         ? currentMonthDay - (currentWeekDay - columnIndex)
         : currentMonthDay + (columnIndex - currentWeekDay)
     );
-    const isCurrentDay = currentWeekDay === columnIndex;
-    const dayColumn = weekGrid.appendChild(document.createElement("div"));
+    const dayColumn = weekGrid.appendChild(
+      createNewElement({ elementTag: "div" })
+    );
 
     hourCells.forEach((cellIndex) => {
-      const hourCell = dayColumn.appendChild(document.createElement("div"));
-      hourCell.textContent =
-        columnIndex && cellIndex === 0 ? currentColumnDay.getDate() : "";
-      hourCell.className =
-        cellIndex === 0 && isCurrentDay ? "cell current-day-header" : "cell";
+      const getCellContentAndClassName = () => {
+        const baseClass = "cell";
+
+        if (columnIndex && cellIndex === 0) {
+          const date = currentColumnDay.getDate();
+
+          return {
+            content: `<h3>${DAY_NAMES[columnIndex]}<br>${date}</h3>`,
+            className:
+              currentWeekDay === columnIndex
+                ? baseClass + " current-day-header"
+                : baseClass,
+          };
+        } else if (columnIndex === 0 && cellIndex) {
+          const time =
+            cellIndex <= 12 ? `${cellIndex} AM` : `${cellIndex - 12} PM`;
+
+          return {
+            content: `<span>${time}</span>`,
+            className: baseClass + " time-cell",
+          };
+        }
+
+        return { content: null, className: baseClass };
+      };
+      const { content, className } = getCellContentAndClassName();
+
+      dayColumn.appendChild(
+        createNewElement({
+          elementTag: "div",
+          innerHTML: content,
+          attributes: { className },
+        })
+      );
     });
   });
 };

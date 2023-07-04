@@ -12,6 +12,8 @@
   --thin-border: 1px solid var(--border-color);
   --border-radius: 5px;
   font-size: 18px;
+  font-family: "Karla", sans-serif;
+  font-weight: 300;
 }
 
 h1,
@@ -35,14 +37,8 @@ h6 {
   font-weight: 400;
 }
 
-p {
-  font-family: "Karla", sans-serif;
-  font-weight: 300;
-}
-
 a {
   color: var(--primary-color);
-  border: var(--thin-border);
 }
 
 a:hover {
@@ -53,23 +49,44 @@ a:hover {
 -------------------------------------------------------------------  */
 #week-grid {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
+  grid-template-columns: 50px repeat(7, 1fr);
 }
 
-.day-column {
+#week-grid .day-column {
   display: flex;
   flex-direction: column;
   border: var(--thin-border);
 }
 
-.cell {
+#week-grid .cell {
   border: var(--thin-border);
-  height: 50px;
+  height: 60px;
   text-align: center;
   padding: 0.2rem;
 }
 
-.cell.current-day-header {
+#week-grid .cell.current-day-header {
   background-color: var(--primary-color);
+}
+
+#week-grid .cell.current-day-header > * {
   color: var(--white-color);
+}
+
+#week-grid .cell.time-cell {
+  font-size: 0.8rem;
+  border: none;
+  display: flex;
+  align-items: end;
+  justify-content: end;
+  position: relative;
+
+  ::after {
+    content: "";
+    border: var(--thin-border);
+    position: absolute;
+    width: 20px;
+    bottom: -1px;
+    right: 0;
+  }
 }
