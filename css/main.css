@@ -20,6 +20,11 @@ body {
   height: 100%;
 }
 
+button,
+a {
+  cursor: pointer;
+}
+
 h1,
 h2,
 h3,
@@ -53,7 +58,7 @@ a:hover {
 -------------------------------------------------------------------  */
 header {
   height: 5%;
-  min-height: 30px;
+  min-height: 34px;
   border-bottom: var(--thin-border);
 }
 
@@ -66,6 +71,36 @@ main {
 
 aside {
   border-right: var(--thin-border);
+}
+/* BUTTONS
+-------------------------------------------------------------------  */
+.week-grid-navigation-btn {
+  background-color: var(--primary-lighter-color);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+}
+
+.week-grid-navigation-btn:hover {
+  background-color: var(--primary-color);
+}
+
+.week-grid-navigation-btn .arrow {
+  border: solid var(--white-color);
+  border-width: 0 2px 2px 0;
+  display: inline-block;
+  padding: 5px;
+}
+
+.week-grid-navigation-btn .arrow.right {
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
+
+.week-grid-navigation-btn .arrow.left {
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
 }
 
 /* WEEK GRID
