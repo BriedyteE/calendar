@@ -16,7 +16,13 @@ function getDateData(date = new Date()) {
   const year = date.getFullYear();
   const formattedDate = [dayOfMont, month, year].join("/");
 
-  return { dayOfWeek, dayOfMont, month, year, formattedDate };
+  return {
+    dayOfWeek: dayOfWeek === 0 ? 7 : dayOfWeek,
+    dayOfMont,
+    month,
+    year,
+    formattedDate,
+  };
 }
 
 const renderWeekGrid = () => {
