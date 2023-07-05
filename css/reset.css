@@ -16,11 +16,6 @@
   box-sizing: border-box;
 }
 
-a,
-button {
-  cursor: revert;
-}
-
 ol,
 ul,
 menu {

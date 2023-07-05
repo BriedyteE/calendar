@@ -2,36 +2,53 @@ import { DAY_NAMES } from "./contants.js";
 import { createNewElement } from "./utils.js";
 
 const weekGrid = document.getElementById("week-grid");
-const currentDate = new Date();
+const weekGridNavigationButtons = document.querySelectorAll(
+  ".week-grid-navigation-btn"
+);
 
-const renderWeekView = () => {
-  const dayColumns = [...Array(8).keys()];
-  const hourCells = [...Array(25).keys()];
-  const currentWeekDay = currentDate.getDay();
-  const currentMonthDay = currentDate.getDate();
+const { dayOfWeek, dayOfMont, formattedDate: currentDate } = getDateData();
+let firstDayInWeekGrid = dayOfMont - (dayOfWeek - 1);
 
-  dayColumns.forEach((columnIndex) => {
-    const currentColumnDay = new Date();
-    currentColumnDay.setDate(
-      columnIndex <= currentWeekDay
-        ? currentMonthDay - (currentWeekDay - columnIndex)
-        : currentMonthDay + (columnIndex - currentWeekDay)
-    );
+function getDateData(date = new Date()) {
+  const dayOfWeek = date.getDay();
+  const dayOfMont = date.getDate();
+  const month = date.getMonth();
+  const year = date.getFullYear();
+  const formattedDate = [dayOfMont, month, year].join("/");
+
+  return {
+    dayOfWeek: dayOfWeek === 0 ? 7 : dayOfWeek,
+    dayOfMont,
+    month,
+    year,
+    formattedDate,
+  };
+}
+
+const renderWeekGrid = () => {
+  const columns = [...Array(8).keys()];
+  const cells = [...Array(25).keys()];
+
+  columns.forEach((columnIndex) => {
+    const currentColumnDate = new Date();
+    currentColumnDate.setDate(firstDayInWeekGrid + (columnIndex - 1));
+
+    const { dayOfMont, formattedDate: columnDate } =
+      getDateData(currentColumnDate);
+
     const dayColumn = weekGrid.appendChild(
       createNewElement({ elementTag: "div" })
     );
 
-    hourCells.forEach((cellIndex) => {
+    cells.forEach((cellIndex) => {
       const getCellContentAndClassName = () => {
         const baseClass = "cell";
 
         if (columnIndex && cellIndex === 0) {
-          const date = currentColumnDay.getDate();
-
           return {
-            content: `<h3>${DAY_NAMES[columnIndex]}<br>${date}</h3>`,
+            content: `<h3>${DAY_NAMES[columnIndex]}<br>${dayOfMont}</h3>`,
             className:
-              currentWeekDay === columnIndex
+              columnDate === currentDate
                 ? baseClass + " current-day-header"
                 : baseClass,
           };
@@ -60,4 +77,14 @@ const renderWeekView = () => {
   });
 };
 
-renderWeekView();
+weekGridNavigationButtons.forEach((button, index) => {
+  button.addEventListener("click", () => {
+    firstDayInWeekGrid =
+      index === 0 ? firstDayInWeekGrid + 7 : firstDayInWeekGrid - 7;
+
+    weekGrid.innerHTML = "";
+    renderWeekGrid();
+  });
+});
+
+renderWeekGrid();
