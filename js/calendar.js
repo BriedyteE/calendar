@@ -80,7 +80,7 @@ const renderWeekGrid = () => {
 weekGridNavigationButtons.forEach((button, index) => {
   button.addEventListener("click", () => {
     firstDayInWeekGrid =
-      index === 0 ? firstDayInWeekGrid + 7 : firstDayInWeekGrid - 7;
+      index === 0 ? firstDayInWeekGrid - 7 : firstDayInWeekGrid + 7;
 
     weekGrid.innerHTML = "";
     renderWeekGrid();
