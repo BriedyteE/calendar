@@ -1,10 +1,12 @@
 import { DAY_NAMES } from "./contants.js";
 import { createNewElement } from "./utils.js";
 
-const weekGrid = document.getElementById("week-grid");
+const weekGrid = document.querySelector(".week-grid");
 const weekGridNavigationButtons = document.querySelectorAll(
-  ".week-grid-navigation-btn"
+  ".week.navigation-btn"
 );
+
+console.log("weekGrid", weekGrid);
 
 const { dayOfWeek, dayOfMont, formattedDate: currentDate } = getDateData();
 let firstDayInWeekGrid = dayOfMont - (dayOfWeek - 1);
@@ -26,21 +28,21 @@ function getDateData(date = new Date()) {
 }
 
 const renderWeekGrid = () => {
-  const columns = [...Array(8).keys()];
-  const cells = [...Array(25).keys()];
+  const columnIndexes = [...Array(8).keys()];
+  const cellIndexes = [...Array(25).keys()];
 
-  columns.forEach((columnIndex) => {
+  columnIndexes.forEach((columnIndex) => {
     const currentColumnDate = new Date();
     currentColumnDate.setDate(firstDayInWeekGrid + (columnIndex - 1));
 
     const { dayOfMont, formattedDate: columnDate } =
       getDateData(currentColumnDate);
 
-    const dayColumn = weekGrid.appendChild(
+    const column = weekGrid.appendChild(
       createNewElement({ elementTag: "div" })
     );
 
-    cells.forEach((cellIndex) => {
+    cellIndexes.forEach((cellIndex) => {
       const getCellContentAndClassName = () => {
         const baseClass = "cell";
 
@@ -66,7 +68,7 @@ const renderWeekGrid = () => {
       };
       const { content, className } = getCellContentAndClassName();
 
-      dayColumn.appendChild(
+      column.appendChild(
         createNewElement({
           elementTag: "div",
           innerHTML: content,

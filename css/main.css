@@ -74,7 +74,7 @@ aside {
 }
 /* BUTTONS
 -------------------------------------------------------------------  */
-.week-grid-navigation-btn {
+.navigation-btn {
   background-color: var(--primary-lighter-color);
   border-radius: 50%;
   width: 30px;
@@ -82,43 +82,43 @@ aside {
   text-align: center;
 }
 
-.week-grid-navigation-btn:hover {
+.navigation-btn:hover {
   background-color: var(--primary-color);
 }
 
-.week-grid-navigation-btn .arrow {
+.navigation-btn .arrow {
   border: solid var(--white-color);
   border-width: 0 2px 2px 0;
   display: inline-block;
   padding: 5px;
 }
 
-.week-grid-navigation-btn .arrow.right {
+.navigation-btn .arrow.right {
   transform: rotate(-45deg);
   -webkit-transform: rotate(-45deg);
 }
 
-.week-grid-navigation-btn .arrow.left {
+.navigation-btn .arrow.left {
   transform: rotate(135deg);
   -webkit-transform: rotate(135deg);
 }
 
 /* WEEK GRID
 -------------------------------------------------------------------  */
-#week-grid {
+.week-grid {
   display: grid;
   grid-template-columns: 50px repeat(7, 1fr);
   height: 100%;
   overflow: auto;
 }
 
-#week-grid .day-column {
+.week-grid .column {
   display: flex;
   flex-direction: column;
   border: var(--thin-border);
 }
 
-#week-grid .cell {
+.week-grid .cell {
   border-right: var(--thin-border);
   border-bottom: var(--thin-border);
   height: 60px;
@@ -126,22 +126,22 @@ aside {
   padding: 0.2rem;
 }
 
-#week-grid .cell:first-child {
+.week-grid .cell:first-child {
   background-color: var(--white-color);
   position: sticky;
   top: 0;
   z-index: 1;
 }
 
-#week-grid .cell.current-day-header {
+.week-grid .cell.current-day-header {
   background-color: var(--primary-color);
 }
 
-#week-grid .cell.current-day-header > * {
+.week-grid .cell.current-day-header > * {
   color: var(--white-color);
 }
 
-#week-grid .cell.time-cell {
+.week-grid .cell.time-cell {
   font-size: 0.8rem;
   border: none;
   display: flex;
