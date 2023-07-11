@@ -12,25 +12,25 @@ const monthGridNavigationButtons = document.querySelectorAll(
 
 const {
   dayOfWeek,
-  dayOfMont,
+  dayOfMonth,
   month,
   year,
   formattedDate: currentDate,
 } = getDateData();
 
-let firstDayInWeekGrid = dayOfMont - (dayOfWeek - 1);
+let firstDayInWeekGrid = dayOfMonth - (dayOfWeek - 1);
 let monthInMonthGrid = month;
 
 function getDateData(date = new Date()) {
   const dayOfWeek = date.getDay();
-  const dayOfMont = date.getDate();
+  const dayOfMonth = date.getDate();
   const month = date.getMonth();
   const year = date.getFullYear();
-  const formattedDate = [dayOfMont, month, year].join("/");
+  const formattedDate = [dayOfMonth, month, year].join("/");
 
   return {
     dayOfWeek: dayOfWeek === 0 ? 7 : dayOfWeek,
-    dayOfMont,
+    dayOfMonth,
     month,
     year,
     formattedDate,
@@ -54,11 +54,11 @@ const renderWeekGrid = () => {
           const currentColumnDate = new Date();
           currentColumnDate.setDate(firstDayInWeekGrid + (columnIndex - 1));
 
-          const { dayOfMont, formattedDate: columnDate } =
+          const { dayOfMonth, formattedDate: columnDate } =
             getDateData(currentColumnDate);
 
           return {
-            content: `<h3>${DAY_NAMES[columnIndex]}<br>${dayOfMont}</h3>`,
+            content: `<h3>${DAY_NAMES[columnIndex]}<br>${dayOfMonth}</h3>`,
             className:
               columnDate === currentDate
                 ? baseClass + " current-day-header"
@@ -108,12 +108,12 @@ const renderMonthGrid = () => {
     }
     const cellDate = new Date(year, monthInMonthGrid, 1);
     cellDate.setDate(cellDate.getDate() - cellDate.getDay() + (cellIndex - 6));
-    const { dayOfMont, formattedDate: currCellDate } = getDateData(cellDate);
+    const { dayOfMonth, formattedDate: currCellDate } = getDateData(cellDate);
 
     monthGrid.appendChild(
       createNewElement({
         elementTag: "div",
-        innerHTML: `<span>${dayOfMont}</span>`,
+        innerHTML: `<span>${dayOfMonth}</span>`,
         attributes: {
           className:
             currCellDate === currentDate
