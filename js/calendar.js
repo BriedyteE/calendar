@@ -2,14 +2,24 @@ import { DAY_NAMES } from "./contants.js";
 import { createNewElement } from "./utils.js";
 
 const weekGrid = document.querySelector(".week-grid");
+const monthGrid = document.querySelector(".month-grid");
 const weekGridNavigationButtons = document.querySelectorAll(
   ".week.navigation-btn"
 );
+const monthGridNavigationButtons = document.querySelectorAll(
+  ".month.navigation-btn"
+);
 
-console.log("weekGrid", weekGrid);
+const {
+  dayOfWeek,
+  dayOfMont,
+  month,
+  year,
+  formattedDate: currentDate,
+} = getDateData();
 
-const { dayOfWeek, dayOfMont, formattedDate: currentDate } = getDateData();
 let firstDayInWeekGrid = dayOfMont - (dayOfWeek - 1);
+let monthInMonthGrid = month;
 
 function getDateData(date = new Date()) {
   const dayOfWeek = date.getDay();
@@ -32,12 +42,6 @@ const renderWeekGrid = () => {
   const cellIndexes = [...Array(25).keys()];
 
   columnIndexes.forEach((columnIndex) => {
-    const currentColumnDate = new Date();
-    currentColumnDate.setDate(firstDayInWeekGrid + (columnIndex - 1));
-
-    const { dayOfMont, formattedDate: columnDate } =
-      getDateData(currentColumnDate);
-
     const column = weekGrid.appendChild(
       createNewElement({ elementTag: "div" })
     );
@@ -47,6 +51,12 @@ const renderWeekGrid = () => {
         const baseClass = "cell";
 
         if (columnIndex && cellIndex === 0) {
+          const currentColumnDate = new Date();
+          currentColumnDate.setDate(firstDayInWeekGrid + (columnIndex - 1));
+
+          const { dayOfMont, formattedDate: columnDate } =
+            getDateData(currentColumnDate);
+
           return {
             content: `<h3>${DAY_NAMES[columnIndex]}<br>${dayOfMont}</h3>`,
             className:
@@ -79,6 +89,42 @@ const renderWeekGrid = () => {
   });
 };
 
+const renderMonthGrid = () => {
+  const cellIndexes = [...Array(49).keys()];
+
+  cellIndexes.forEach((cellIndex) => {
+    const baseClass = "cell";
+
+    if (cellIndex <= 6) {
+      monthGrid.appendChild(
+        createNewElement({
+          elementTag: "div",
+          innerHTML: `<h3>${DAY_NAMES[cellIndex + 1][0].toUpperCase()}</h3>`,
+          attributes: { className: baseClass },
+        })
+      );
+
+      return;
+    }
+    const cellDate = new Date(year, monthInMonthGrid, 1);
+    cellDate.setDate(cellDate.getDate() - cellDate.getDay() + (cellIndex - 6));
+    const { dayOfMont, formattedDate: currCellDate } = getDateData(cellDate);
+
+    monthGrid.appendChild(
+      createNewElement({
+        elementTag: "div",
+        innerHTML: `<span>${dayOfMont}</span>`,
+        attributes: {
+          className:
+            currCellDate === currentDate
+              ? baseClass + " current-day"
+              : baseClass,
+        },
+      })
+    );
+  });
+};
+
 weekGridNavigationButtons.forEach((button, index) => {
   button.addEventListener("click", () => {
     firstDayInWeekGrid =
@@ -89,4 +135,15 @@ weekGridNavigationButtons.forEach((button, index) => {
   });
 });
 
+monthGridNavigationButtons.forEach((button, index) => {
+  button.addEventListener("click", () => {
+    monthInMonthGrid =
+      index === 0 ? monthInMonthGrid - 1 : monthInMonthGrid + 1;
+
+    monthGrid.innerHTML = "";
+    renderMonthGrid();
+  });
+});
+
 renderWeekGrid();
+renderMonthGrid();
