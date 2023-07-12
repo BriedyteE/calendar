@@ -1,4 +1,4 @@
-import { DAY_NAMES } from "./contants.js";
+import { DAY_NAMES } from "./constants.js";
 import { createNewElement } from "./utils.js";
 
 const weekGrid = document.querySelector(".week-grid");
