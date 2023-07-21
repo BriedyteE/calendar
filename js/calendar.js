@@ -1,149 +1,230 @@
-import { DAY_NAMES } from "./constants.js";
-import { createNewElement } from "./utils.js";
+import { DAY_NAMES, MONTHS } from "./constants.js";
+import { createNewElement, getDateData } from "./utils.js";
 
-const weekGrid = document.querySelector(".week-grid");
-const monthGrid = document.querySelector(".month-grid");
-const weekGridNavigationButtons = document.querySelectorAll(
-  ".week.navigation-btn"
-);
-const monthGridNavigationButtons = document.querySelectorAll(
-  ".month.navigation-btn"
-);
+const mainWeekGrid = document.querySelector(".week-grid");
+const miniMonthGrid = document.querySelector(".month-grid");
 
-const {
-  dayOfWeek,
-  dayOfMonth,
-  month,
-  year,
-  formattedDate: currentDate,
-} = getDateData();
+const { formattedDate: currentDate } = getDateData(new Date());
+let targetDate = new Date();
+let highlitedDay;
 
-let firstDayInWeekGrid = dayOfMonth - (dayOfWeek - 1);
-let monthInMonthGrid = month;
+const renderMainCalendar = () => {
+  mainWeekGrid.innerHTML = "";
 
-function getDateData(date = new Date()) {
-  const dayOfWeek = date.getDay();
-  const dayOfMonth = date.getDate();
-  const month = date.getMonth();
-  const year = date.getFullYear();
-  const formattedDate = [dayOfMonth, month, year].join("/");
-
-  return {
-    dayOfWeek: dayOfWeek === 0 ? 7 : dayOfWeek,
-    dayOfMonth,
-    month,
-    year,
-    formattedDate,
-  };
-}
-
-const renderWeekGrid = () => {
   const columnIndexes = [...Array(8).keys()];
   const cellIndexes = [...Array(25).keys()];
+  let { targetMonths, targetYears } = { targetMonths: [], targetYears: [] };
 
   columnIndexes.forEach((columnIndex) => {
-    const column = weekGrid.appendChild(
+    const column = mainWeekGrid.appendChild(
       createNewElement({ elementTag: "div" })
     );
+    const targetDayOfWeek = targetDate.getDay() === 0 ? 7 : targetDate.getDay();
+
+    const currentColumnDate = new Date(
+      targetDate.getFullYear(),
+      targetDate.getMonth(),
+      targetDate.getDate() - targetDayOfWeek + columnIndex
+    );
+
+    const {
+      dayOfMonth,
+      month,
+      year,
+      formattedDate: columnDate,
+    } = getDateData(currentColumnDate);
+
+    if (!targetMonths.includes(MONTHS[month]) && columnIndex) {
+      targetMonths.push(MONTHS[month]);
+      targetYears.push(year);
+    }
 
     cellIndexes.forEach((cellIndex) => {
-      const getCellContentAndClassName = () => {
-        const baseClass = "cell";
+      const baseCellClass = "cell";
 
-        if (columnIndex && cellIndex === 0) {
-          const currentColumnDate = new Date();
-          currentColumnDate.setDate(firstDayInWeekGrid + (columnIndex - 1));
+      if (cellIndex === 0) {
+        const dayOfWeek = DAY_NAMES[columnIndex]?.toUpperCase().substr(0, 3);
 
-          const { dayOfMonth, formattedDate: columnDate } =
-            getDateData(currentColumnDate);
+        column.appendChild(
+          createNewElement({
+            elementTag: "div",
+            innerHTML:
+              dayOfWeek &&
+              `<time datetime="${columnDate}">${dayOfWeek}<span>${dayOfMonth}</span></time>`,
+            attributes: {
+              className:
+                "header-cell" +
+                (currentDate === columnDate ? " current-day" : ""),
+            },
+          })
+        );
 
-          return {
-            content: `<h3>${DAY_NAMES[columnIndex]}<br>${dayOfMonth}</h3>`,
-            className:
-              columnDate === currentDate
-                ? baseClass + " current-day-header"
-                : baseClass,
-          };
-        } else if (columnIndex === 0 && cellIndex) {
-          const time =
-            cellIndex <= 12 ? `${cellIndex} AM` : `${cellIndex - 12} PM`;
+        return;
+      }
 
-          return {
-            content: `<span>${time}</span>`,
-            className: baseClass + " time-cell",
-          };
-        }
+      if (columnIndex === 0 && cellIndex) {
+        const time =
+          cellIndex <= 12 ? `${cellIndex} AM` : `${cellIndex - 12} PM`;
 
-        return { content: null, className: baseClass };
-      };
-      const { content, className } = getCellContentAndClassName();
+        column.appendChild(
+          createNewElement({
+            elementTag: "div",
+            innerHTML: cellIndex !== 24 ? `<span>${time}</span>` : "",
+            attributes: { className: baseCellClass + " time-cell" },
+          })
+        );
+        return;
+      }
 
       column.appendChild(
         createNewElement({
           elementTag: "div",
-          innerHTML: content,
-          attributes: { className },
+          attributes: { className: baseCellClass },
         })
       );
     });
   });
+
+  const dateRange = targetMonths
+    .map((month, index) =>
+      targetYears[index] !== targetYears[index + 1]
+        ? `${month} ${targetYears[index]}`
+        : month
+    )
+    .join(" - ");
+
+  document.querySelector("header .date").textContent = dateRange;
 };
 
-const renderMonthGrid = () => {
+const highliteNewCell = (element) => {
+  const className = "highlited-day";
+  document
+    .querySelectorAll(`.${className}`)
+    ?.forEach((item) => item.classList.remove(className));
+
+  element.classList.add(className);
+};
+
+const renderMiniCalendar = () => {
+  miniMonthGrid.innerHTML = "";
+
   const cellIndexes = [...Array(49).keys()];
+  const firstDayDate = new Date(
+    targetDate.getFullYear(),
+    targetDate.getMonth(),
+    1
+  );
+
+  const {
+    dayOfMonth: firstDayOfTargetMonth,
+    dayOfWeek: firstDayOfTargetWeek,
+    month: targetMonth,
+    year: targetYear,
+  } = getDateData(firstDayDate);
+
+  document.querySelector(
+    "aside .date"
+  ).textContent = `${MONTHS[targetMonth]} ${targetYear}`;
 
   cellIndexes.forEach((cellIndex) => {
-    const baseClass = "cell";
+    const baseClassName = "cell";
 
     if (cellIndex <= 6) {
-      monthGrid.appendChild(
+      miniMonthGrid.appendChild(
         createNewElement({
           elementTag: "div",
           innerHTML: `<h3>${DAY_NAMES[cellIndex + 1][0].toUpperCase()}</h3>`,
-          attributes: { className: baseClass },
+          attributes: { className: baseClassName },
         })
       );
-
       return;
     }
-    const cellDate = new Date(year, monthInMonthGrid, 1);
-    cellDate.setDate(cellDate.getDate() - cellDate.getDay() + (cellIndex - 6));
-    const { dayOfMonth, formattedDate: currCellDate } = getDateData(cellDate);
 
-    monthGrid.appendChild(
+    const currCellDate = new Date(
+      targetYear,
+      targetMonth,
+      firstDayOfTargetMonth - firstDayOfTargetWeek + cellIndex - 6
+    );
+
+    const {
+      dayOfMonth: cellDay,
+      month: cellMonth,
+      year: cellYear,
+      formattedDate: cellDate,
+    } = getDateData(currCellDate);
+
+    const getCellClass = () => {
+      const currDayClass = cellDate === currentDate ? " current-day" : "";
+      const currMonthClass = cellMonth === targetMonth ? " current-month" : "";
+      const highlitedClass = cellDate === highlitedDay ? " highlited-day" : "";
+
+      return baseClassName + currDayClass + currMonthClass + highlitedClass;
+    };
+
+    const dateCell = miniMonthGrid.appendChild(
       createNewElement({
-        elementTag: "div",
-        innerHTML: `<span>${dayOfMonth}</span>`,
+        elementTag: "button",
+        innerHTML: `<time datetime="${cellDate}">${cellDay}</time>`,
         attributes: {
-          className:
-            currCellDate === currentDate
-              ? baseClass + " current-day"
-              : baseClass,
+          className: getCellClass(),
         },
       })
     );
+
+    dateCell.addEventListener("click", () => {
+      targetDate = new Date(cellYear, cellMonth, cellDay);
+      highlitedDay = getDateData(targetDate).formattedDate;
+
+      if (targetMonth === cellMonth) {
+        highliteNewCell(dateCell);
+      } else {
+        renderMiniCalendar();
+      }
+
+      renderMainCalendar();
+    });
   });
 };
 
-weekGridNavigationButtons.forEach((button, index) => {
-  button.addEventListener("click", () => {
-    firstDayInWeekGrid =
-      index === 0 ? firstDayInWeekGrid - 7 : firstDayInWeekGrid + 7;
+document.querySelector("header .today-btn").addEventListener("click", () => {
+  targetDate = new Date();
+  renderMainCalendar();
+  renderMiniCalendar();
+});
 
-    weekGrid.innerHTML = "";
-    renderWeekGrid();
+document.querySelectorAll(".navigation-btn").forEach((button) => {
+  button.addEventListener("click", () => {
+    const { year, month, dayOfMonth } = getDateData(targetDate);
+    const isBack = [...button.classList].includes("left");
+
+    if ([...button.classList].includes("week")) {
+      const currCalendarMonth = month;
+      targetDate = new Date(
+        year,
+        month,
+        isBack ? dayOfMonth - 7 : dayOfMonth + 7
+      );
+      const { formattedDate, month: selectedMonth } = getDateData(targetDate);
+
+      renderMainCalendar();
+
+      if (currCalendarMonth === selectedMonth) {
+        highliteNewCell(
+          document
+            .querySelector(`.month-grid time[datetime="${formattedDate}"]`)
+            .closest("button")
+        );
+      } else {
+        highlitedDay = formattedDate;
+        renderMiniCalendar();
+      }
+      return;
+    }
+
+    targetDate = new Date(year, isBack ? month - 1 : month + 1, dayOfMonth);
+    renderMiniCalendar();
   });
 });
 
-monthGridNavigationButtons.forEach((button, index) => {
-  button.addEventListener("click", () => {
-    monthInMonthGrid =
-      index === 0 ? monthInMonthGrid - 1 : monthInMonthGrid + 1;
-
-    monthGrid.innerHTML = "";
-    renderMonthGrid();
-  });
-});
-
-renderWeekGrid();
-renderMonthGrid();
+renderMainCalendar();
+renderMiniCalendar();

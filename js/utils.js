@@ -14,3 +14,19 @@ export const createNewElement = ({
 
   return newElement;
 };
+
+export const getDateData = (date) => {
+  const dayOfWeek = date.getDay();
+  const dayOfMonth = date.getDate();
+  const month = date.getMonth();
+  const year = date.getFullYear();
+  const formattedDate = [year, month + 1, dayOfMonth].join("-");
+
+  return {
+    dayOfWeek: dayOfWeek === 0 ? 7 : dayOfWeek,
+    dayOfMonth,
+    month,
+    year,
+    formattedDate,
+  };
+};
