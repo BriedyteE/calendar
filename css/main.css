@@ -242,7 +242,7 @@ aside {
   color: var(--dark-grey-color);
 }
 
-.month-grid .cell.highlited-day:not(.current-day) {
+.month-grid .cell.selected-day:not(.current-day) {
   animation: addHighlit 0.5s forwards;
 }
 
