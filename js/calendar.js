@@ -5,8 +5,8 @@ const mainWeekGrid = document.querySelector(".week-grid");
 const miniMonthGrid = document.querySelector(".month-grid");
 
 const { formattedDate: currentDate } = getDateData(new Date());
-let targetDate = new Date();
-let highlitedDay;
+let mainCalendarDate = new Date();
+let miniCalendarDate = new Date();
 
 const renderEventModal = (date) => {
   const { formattedDate } = getDateData(date);
@@ -21,23 +21,48 @@ const renderEventModal = (date) => {
     .addEventListener("click", () => modal.classList.remove("visible"));
 };
 
+const navigateToSelectedDate = (selectedDate) => {
+  const { dayOfMonth, month, year, formattedDate } = getDateData(selectedDate);
+  mainCalendarDate = new Date(year, month, dayOfMonth);
+
+  if (month === miniCalendarDate.getMonth()) {
+    const highlitedCell = document
+      .querySelector(`.month-grid time[datetime="${formattedDate}"]`)
+      .closest("button");
+
+    const className = "highlited-day";
+    document
+      .querySelectorAll(`.${className}`)
+      ?.forEach((item) => item.classList.remove(className));
+    highlitedCell.classList.add(className);
+  } else {
+    miniCalendarDate = new Date(year, month, dayOfMonth);
+    renderMiniCalendar();
+  }
+
+  renderMainCalendar();
+};
+
 const renderMainCalendar = () => {
   mainWeekGrid.innerHTML = "";
 
   const columnIndexes = [...Array(8).keys()];
   const cellIndexes = [...Array(25).keys()];
-  let { targetMonths, targetYears } = { targetMonths: [], targetYears: [] };
+
+  let displayedMonts = [];
+  let displayedYears = [];
 
   columnIndexes.forEach((columnIndex) => {
     const column = mainWeekGrid.appendChild(
       createNewElement({ elementTag: "div" })
     );
-    const targetDayOfWeek = targetDate.getDay() === 0 ? 7 : targetDate.getDay();
+    const dayOfWeek =
+      mainCalendarDate.getDay() === 0 ? 7 : mainCalendarDate.getDay();
 
     const currentColumnDate = new Date(
-      targetDate.getFullYear(),
-      targetDate.getMonth(),
-      targetDate.getDate() - targetDayOfWeek + columnIndex
+      mainCalendarDate.getFullYear(),
+      mainCalendarDate.getMonth(),
+      mainCalendarDate.getDate() - dayOfWeek + columnIndex
     );
 
     const {
@@ -47,9 +72,9 @@ const renderMainCalendar = () => {
       formattedDate: columnDate,
     } = getDateData(currentColumnDate);
 
-    if (!targetMonths.includes(MONTHS[month]) && columnIndex) {
-      targetMonths.push(MONTHS[month]);
-      targetYears.push(year);
+    if (!displayedMonts.includes(MONTHS[month]) && columnIndex) {
+      displayedMonts.push(MONTHS[month]);
+      displayedYears.push(year);
     }
 
     cellIndexes.forEach((cellIndex) => {
@@ -89,24 +114,23 @@ const renderMainCalendar = () => {
         return;
       }
 
-      const hourCell = column.appendChild(
+      const cell = column.appendChild(
         createNewElement({
           elementTag: "button",
           attributes: { className: baseCellClass },
         })
       );
 
-      hourCell.addEventListener("click", () => {
-        document.querySelector("main .event-modal").classList.add("visible");
+      cell.addEventListener("click", () => {
         renderEventModal(currentColumnDate);
       });
     });
   });
 
-  const dateRange = targetMonths
+  const dateRange = displayedMonts
     .map((month, index) =>
-      targetYears[index] !== targetYears[index + 1]
-        ? `${month} ${targetYears[index]}`
+      displayedYears[index] !== displayedYears[index + 1]
+        ? `${month} ${displayedYears[index]}`
         : month
     )
     .join(" - ");
@@ -114,35 +138,26 @@ const renderMainCalendar = () => {
   document.querySelector("header .date").textContent = dateRange;
 };
 
-const highliteNewCell = (element) => {
-  const className = "highlited-day";
-  document
-    .querySelectorAll(`.${className}`)
-    ?.forEach((item) => item.classList.remove(className));
-
-  element.classList.add(className);
-};
-
 const renderMiniCalendar = () => {
   miniMonthGrid.innerHTML = "";
 
   const cellIndexes = [...Array(49).keys()];
   const firstDayDate = new Date(
-    targetDate.getFullYear(),
-    targetDate.getMonth(),
+    miniCalendarDate.getFullYear(),
+    miniCalendarDate.getMonth(),
     1
   );
 
   const {
-    dayOfMonth: firstDayOfTargetMonth,
-    dayOfWeek: firstDayOfTargetWeek,
-    month: targetMonth,
-    year: targetYear,
+    dayOfMonth: firstDayOfMonth,
+    dayOfWeek: firstDayOfWeek,
+    month,
+    year,
   } = getDateData(firstDayDate);
 
   document.querySelector(
     "aside .date"
-  ).textContent = `${MONTHS[targetMonth]} ${targetYear}`;
+  ).textContent = `${MONTHS[month]} ${year}`;
 
   cellIndexes.forEach((cellIndex) => {
     const baseClassName = "cell";
@@ -159,9 +174,9 @@ const renderMiniCalendar = () => {
     }
 
     const currCellDate = new Date(
-      targetYear,
-      targetMonth,
-      firstDayOfTargetMonth - firstDayOfTargetWeek + cellIndex - 6
+      year,
+      month,
+      firstDayOfMonth - firstDayOfWeek + cellIndex - 6
     );
 
     const {
@@ -172,9 +187,11 @@ const renderMiniCalendar = () => {
     } = getDateData(currCellDate);
 
     const getCellClass = () => {
+      const { formattedDate: mainCalendarday } = getDateData(mainCalendarDate);
       const currDayClass = cellDate === currentDate ? " current-day" : "";
-      const currMonthClass = cellMonth === targetMonth ? " current-month" : "";
-      const highlitedClass = cellDate === highlitedDay ? " highlited-day" : "";
+      const currMonthClass = cellMonth === month ? " current-month" : "";
+      const highlitedClass =
+        cellDate === mainCalendarday ? " highlited-day" : "";
 
       return baseClassName + currDayClass + currMonthClass + highlitedClass;
     };
@@ -190,57 +207,37 @@ const renderMiniCalendar = () => {
     );
 
     dateCell.addEventListener("click", () => {
-      targetDate = new Date(cellYear, cellMonth, cellDay);
-      highlitedDay = getDateData(targetDate).formattedDate;
-
-      if (targetMonth === cellMonth) {
-        highliteNewCell(dateCell);
-      } else {
-        renderMiniCalendar();
-      }
-
-      renderMainCalendar();
+      navigateToSelectedDate(new Date(cellYear, cellMonth, cellDay));
     });
   });
 };
 
-document.querySelector("header .today-btn").addEventListener("click", () => {
-  targetDate = new Date();
-  renderMainCalendar();
-  renderMiniCalendar();
+document
+  .querySelector("header .today-btn")
+  .addEventListener("click", () => navigateToSelectedDate(new Date()));
+
+document.querySelectorAll(".week.navigation-btn").forEach((button) => {
+  button.addEventListener("click", () => {
+    const { year, month, dayOfMonth } = getDateData(mainCalendarDate);
+
+    mainCalendarDate = new Date(
+      year,
+      month,
+      [...button.classList].includes("left") ? dayOfMonth - 7 : dayOfMonth + 7
+    );
+
+    navigateToSelectedDate(mainCalendarDate);
+  });
 });
 
-document.querySelectorAll(".navigation-btn").forEach((button) => {
+document.querySelectorAll(".month.navigation-btn").forEach((button) => {
   button.addEventListener("click", () => {
-    const { year, month, dayOfMonth } = getDateData(targetDate);
-    const isBack = [...button.classList].includes("left");
-
-    if ([...button.classList].includes("week")) {
-      const currCalendarMonth = month;
-      targetDate = new Date(
-        year,
-        month,
-        isBack ? dayOfMonth - 7 : dayOfMonth + 7
-      );
-      const { formattedDate, month: selectedMonth } = getDateData(targetDate);
-
-      renderMainCalendar();
-
-      if (currCalendarMonth === selectedMonth) {
-        highliteNewCell(
-          document
-            .querySelector(`.month-grid time[datetime="${formattedDate}"]`)
-            .closest("button")
-        );
-      } else {
-        highlitedDay = formattedDate;
-        renderMiniCalendar();
-      }
-
-      return;
-    }
-
-    targetDate = new Date(year, isBack ? month - 1 : month + 1, dayOfMonth);
+    const { year, month, dayOfMonth } = getDateData(miniCalendarDate);
+    miniCalendarDate = new Date(
+      year,
+      [...button.classList].includes("left") ? month - 1 : month + 1,
+      dayOfMonth
+    );
     renderMiniCalendar();
   });
 });
