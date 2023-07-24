@@ -16,6 +16,10 @@ const renderEventModal = (date) => {
   dateInput.value = formattedDate;
   modal.classList.add("visible");
 
+  dateInput.addEventListener("change", (e) => {
+    navigateToSelectedDate(new Date(e.target.value));
+  });
+
   modal
     .querySelector(".event-modal .close")
     .addEventListener("click", () => modal.classList.remove("visible"));
