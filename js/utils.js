@@ -20,7 +20,11 @@ export const getDateData = (date) => {
   const dayOfMonth = date.getDate();
   const month = date.getMonth();
   const year = date.getFullYear();
-  const formattedDate = [year, month + 1, dayOfMonth].join("-");
+  const formattedDate = [
+    year,
+    month + 1 > 9 ? month + 1 : `0${month + 1}`,
+    dayOfMonth > 9 ? dayOfMonth : `0${dayOfMonth}`,
+  ].join("-");
 
   return {
     dayOfWeek: dayOfWeek === 0 ? 7 : dayOfWeek,

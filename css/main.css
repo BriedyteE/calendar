@@ -11,6 +11,7 @@
   --dark-grey-color: rgb(60, 64, 67);
   --error-color: rgb(217, 48, 37);
   --thin-border: 1px solid var(--border-color);
+  --focused-border: 2px solid var(--primary-color);
   --border-radius: 5px;
   font-size: 18px;
   font-weight: 300;
@@ -126,6 +127,7 @@ aside {
   height: 60px;
   text-align: center;
   padding: 0.2rem;
+  width: 100%;
 }
 
 .week-grid .header-cell {
@@ -252,4 +254,52 @@ aside {
 .month-grid-nav {
   display: flex;
   justify-content: space-between;
+}
+
+/* EVENT MODAL
+-------------------------------------------------------------------  */
+
+.event-modal {
+  background-color: var(--white-color);
+  position: fixed;
+  width: 90%;
+  max-width: 750px;
+  height: 200px;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  transform: translate(-50%, -50%);
+  border-radius: 5px;
+  box-shadow: rgba(0, 0, 0, 0.14) 0px 24px 38px 3px;
+  display: none;
+}
+
+.event-modal.visible {
+  display: inline-block;
+}
+
+.event-modal .close {
+  width: 15px;
+}
+
+.event-modal .event-title {
+  width: 100%;
+  font-size: 22px;
+  border-bottom: var(--thin-border);
+}
+
+.event-modal .event-title::placeholder {
+  color: var(--dark-grey-color);
+  font-weight: 400;
+}
+
+.event-modal .event-title:focus {
+  border-bottom: var(--focused-border);
+}
+
+.event-modal .modal-header {
+  background-color: var(--light-grey-color);
+  padding: 4px;
+  display: flex;
+  justify-content: end;
 }

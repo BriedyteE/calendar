@@ -8,6 +8,19 @@ const { formattedDate: currentDate } = getDateData(new Date());
 let targetDate = new Date();
 let highlitedDay;
 
+const renderEventModal = (date) => {
+  const { formattedDate } = getDateData(date);
+  const modal = document.querySelector(".event-modal");
+  const dateInput = modal.querySelector("input.full-date");
+
+  dateInput.value = formattedDate;
+  modal.classList.add("visible");
+
+  modal
+    .querySelector(".event-modal .close")
+    .addEventListener("click", () => modal.classList.remove("visible"));
+};
+
 const renderMainCalendar = () => {
   mainWeekGrid.innerHTML = "";
 
@@ -76,12 +89,17 @@ const renderMainCalendar = () => {
         return;
       }
 
-      column.appendChild(
+      const hourCell = column.appendChild(
         createNewElement({
-          elementTag: "div",
+          elementTag: "button",
           attributes: { className: baseCellClass },
         })
       );
+
+      hourCell.addEventListener("click", () => {
+        document.querySelector("main .event-modal").classList.add("visible");
+        renderEventModal(currentColumnDate);
+      });
     });
   });
 
@@ -218,6 +236,7 @@ document.querySelectorAll(".navigation-btn").forEach((button) => {
         highlitedDay = formattedDate;
         renderMiniCalendar();
       }
+
       return;
     }
 
