@@ -22,25 +22,25 @@ const renderEventModal = (date) => {
 };
 
 const navigateToSelectedDate = (selectedDate) => {
-  const { dayOfMonth, month, year, formattedDate } = getDateData(selectedDate);
-  mainCalendarDate = new Date(year, month, dayOfMonth);
+  const { month, formattedDate } = getDateData(selectedDate);
+  mainCalendarDate = new Date(formattedDate);
+  renderMainCalendar();
 
   if (month === miniCalendarDate.getMonth()) {
-    const highlitedCell = document
+    const className = "selected-day";
+    const selectedCell = document
       .querySelector(`.month-grid time[datetime="${formattedDate}"]`)
       .closest("button");
 
-    const className = "highlited-day";
     document
       .querySelectorAll(`.${className}`)
       ?.forEach((item) => item.classList.remove(className));
-    highlitedCell.classList.add(className);
+
+    selectedCell.classList.add(className);
   } else {
-    miniCalendarDate = new Date(year, month, dayOfMonth);
+    miniCalendarDate = new Date(formattedDate);
     renderMiniCalendar();
   }
-
-  renderMainCalendar();
 };
 
 const renderMainCalendar = () => {
@@ -56,13 +56,13 @@ const renderMainCalendar = () => {
     const column = mainWeekGrid.appendChild(
       createNewElement({ elementTag: "div" })
     );
-    const dayOfWeek =
-      mainCalendarDate.getDay() === 0 ? 7 : mainCalendarDate.getDay();
+
+    const displayedDate = getDateData(mainCalendarDate);
 
     const currentColumnDate = new Date(
-      mainCalendarDate.getFullYear(),
-      mainCalendarDate.getMonth(),
-      mainCalendarDate.getDate() - dayOfWeek + columnIndex
+      displayedDate.year,
+      displayedDate.month,
+      displayedDate.dayOfMonth - dayOfWeek + columnIndex
     );
 
     const {
@@ -187,13 +187,13 @@ const renderMiniCalendar = () => {
     } = getDateData(currCellDate);
 
     const getCellClass = () => {
-      const { formattedDate: mainCalendarday } = getDateData(mainCalendarDate);
+      const { formattedDate: mainCalendarDate } = getDateData(mainCalendarDate);
       const currDayClass = cellDate === currentDate ? " current-day" : "";
       const currMonthClass = cellMonth === month ? " current-month" : "";
-      const highlitedClass =
-        cellDate === mainCalendarday ? " highlited-day" : "";
+      const selectedDayClass =
+        cellDate === mainCalendarDate ? " selected-day" : "";
 
-      return baseClassName + currDayClass + currMonthClass + highlitedClass;
+      return baseClassName + currDayClass + currMonthClass + selectedDayClass;
     };
 
     const dateCell = miniMonthGrid.appendChild(
@@ -216,26 +216,26 @@ document
   .querySelector("header .today-btn")
   .addEventListener("click", () => navigateToSelectedDate(new Date()));
 
-document.querySelectorAll(".week.navigation-btn").forEach((button) => {
+document.querySelectorAll(".week.navigation-btn").forEach((button, index) => {
   button.addEventListener("click", () => {
     const { year, month, dayOfMonth } = getDateData(mainCalendarDate);
 
     mainCalendarDate = new Date(
       year,
       month,
-      [...button.classList].includes("left") ? dayOfMonth - 7 : dayOfMonth + 7
+      index === 0 ? dayOfMonth - 7 : dayOfMonth + 7
     );
 
     navigateToSelectedDate(mainCalendarDate);
   });
 });
 
-document.querySelectorAll(".month.navigation-btn").forEach((button) => {
+document.querySelectorAll(".month.navigation-btn").forEach((button, index) => {
   button.addEventListener("click", () => {
     const { year, month, dayOfMonth } = getDateData(miniCalendarDate);
     miniCalendarDate = new Date(
       year,
-      [...button.classList].includes("left") ? month - 1 : month + 1,
+      index === 0 ? month - 1 : month + 1,
       dayOfMonth
     );
     renderMiniCalendar();
