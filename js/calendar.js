@@ -66,7 +66,7 @@ const renderMainCalendar = () => {
     const currentColumnDate = new Date(
       displayedDate.year,
       displayedDate.month,
-      displayedDate.dayOfMonth - dayOfWeek + columnIndex
+      displayedDate.dayOfMonth - displayedDate.dayOfWeek + columnIndex
     );
 
     const {
@@ -191,11 +191,10 @@ const renderMiniCalendar = () => {
     } = getDateData(currCellDate);
 
     const getCellClass = () => {
-      const { formattedDate: mainCalendarDate } = getDateData(mainCalendarDate);
+      const { formattedDate: mainCalDate } = getDateData(mainCalendarDate);
       const currDayClass = cellDate === currentDate ? " current-day" : "";
       const currMonthClass = cellMonth === month ? " current-month" : "";
-      const selectedDayClass =
-        cellDate === mainCalendarDate ? " selected-day" : "";
+      const selectedDayClass = cellDate === mainCalDate ? " selected-day" : "";
 
       return baseClassName + currDayClass + currMonthClass + selectedDayClass;
     };
