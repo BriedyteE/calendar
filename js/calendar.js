@@ -26,24 +26,30 @@ const renderEventModal = (date) => {
 };
 
 const navigateToSelectedDate = (selectedDate) => {
-  const { month, formattedDate } = getDateData(selectedDate);
+  const { formattedDate } = getDateData(selectedDate);
+  const selectedDayInMainCal = mainWeekGrid.querySelector(
+    `time[datetime="${formattedDate}"]`
+  );
+  const selectedDayInMiniCal = miniMonthGrid.querySelector(
+    `time[datetime="${formattedDate}"]`
+  );
+
   mainCalendarDate = new Date(formattedDate);
-  renderMainCalendar();
+  miniCalendarDate = new Date(formattedDate);
 
-  if (month === miniCalendarDate.getMonth()) {
+  if (!selectedDayInMainCal) {
+    renderMainCalendar();
+  }
+
+  if (!selectedDayInMiniCal) {
+    renderMiniCalendar();
+  } else {
     const className = "selected-day";
-    const selectedCell = document
-      .querySelector(`.month-grid time[datetime="${formattedDate}"]`)
-      .closest("button");
-
-    document
+    miniMonthGrid
       .querySelectorAll(`.${className}`)
       ?.forEach((item) => item.classList.remove(className));
 
-    selectedCell.classList.add(className);
-  } else {
-    miniCalendarDate = new Date(formattedDate);
-    renderMiniCalendar();
+    selectedDayInMiniCal.closest("button").classList.add(className);
   }
 };
 
