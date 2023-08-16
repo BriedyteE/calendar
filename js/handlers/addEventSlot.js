@@ -42,5 +42,9 @@ export const addEventSlot = ({
     const cell = cellsOfTheDate[Number(startHour) + 1];
 
     cell.appendChild(eventSlot);
+
+    if (isModalOpen) {
+      eventSlot.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   }
 };
