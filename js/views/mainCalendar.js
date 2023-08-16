@@ -7,7 +7,11 @@ import {
   createMonthCalendarHeader,
   createMonthCalendarBody,
 } from "../elements/index.js";
-import { getDateData, getFirstDateOfWeek } from "../utils/dateTime.js";
+import {
+  getEventRangeFromCellIndex,
+  getDateData,
+  getFirstDateOfWeek,
+} from "../utils/dateTime.js";
 import { openEventModal, addEventSlot } from "../handlers/index.js";
 
 export const renderMainCalendarBody = ({ calendarMode, selectedDate }) => {
@@ -18,16 +22,12 @@ export const renderMainCalendarBody = ({ calendarMode, selectedDate }) => {
 
   const onCellClick = (e, date, cellIndex) => {
     if (e.target === e.currentTarget) {
-      const isStartOfHour = e.offsetY < e.currentTarget.offsetHeight / 2;
+      const { startTime, endTime } = getEventRangeFromCellIndex({
+        isAtHourStart: e.offsetY < e.target.offsetHeight / 2,
+        cellIndex,
+      });
 
-      const cellHour = cellIndex - 1 <= 9 ? `0${cellIndex - 1}` : cellIndex - 1;
-      const nextCellHour = cellIndex - 1 < 9 ? `0${cellIndex}` : cellIndex;
-
-      const event = {
-        date,
-        startTime: `${cellHour}:${isStartOfHour ? "00" : "30"}`,
-        endTime: isStartOfHour ? `${cellHour}:30` : `${nextCellHour}:00`,
-      };
+      const event = { date, startTime, endTime };
 
       openEventModal(event);
       addEventSlot({ event, isModalOpen: true });
