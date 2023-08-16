@@ -22,3 +22,8 @@ export const MONTHS = {
   10: "November",
   11: "December",
 };
+
+export const MAIN_CALENDAR_MODES = {
+  Week: "week",
+  Month: "month",
+};

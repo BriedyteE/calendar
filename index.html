@@ -14,52 +14,88 @@
     <link rel="stylesheet" href="css/main.css" media="screen" />
   </head>
   <body>
-    <header>
-      <h1>Calendar</h1>
-      <div class="week-grid-nav">
-        <button class="today-btn plain-btn">Today</button>
-        <div>
-          <button class="week navigation-btn left">&lt;</button>
-          <button class="week navigation-btn">&gt;</button>
-        </div>
-        <h2 class="date week-view"></h2>
-      </div>
-    </header>
+    <div class="loader">
+      <span class="loading-line"></span>
+    </div>
 
-    <main>
-      <aside>
-        <div class="month-grid-nav">
-          <h2 class="date month-view"></h2>
-          <div>
-            <button class="month navigation-btn left">&lt;</button>
-            <button class="month navigation-btn">&gt;</button>
-          </div>
-        </div>
-        <div class="month-grid"></div>
-      </aside>
-
-      <div class="week-grid"></div>
-
+    <div class="modal-backdrop">
       <div class="event-modal">
         <div class="modal-header">
+          <button class="delete">
+            <img src="./assets/delete-btn.svg" alt="Delete" />
+          </button>
           <button class="close">
             <img src="./assets/close-btn.svg" alt="Close" />
           </button>
         </div>
         <form>
-          <input
-            name="event-title"
-            id="event-title"
-            placeholder="Add title"
-            class="event-title"
-          />
-          <div class="date">
-            <input type="date" id="start" name="trip-start" class="full-date" />
+          <div class="title-wrapper">
+            <input
+              name="event-title"
+              id="event-title"
+              placeholder="Add title"
+              class="event-title"
+            />
+            <p class="required error-text">Required</p>
           </div>
+          <div class="date">
+            <input
+              type="date"
+              id="start-date"
+              name="start-date"
+              class="full-date"
+            />
+            <input type="time" id="start-time" name="start-time" class="time" />
+            <input type="time" id="end-time" name="end-time" class="time" />
+            <p class="date-error error-text">
+              The end time of the event should not be earlier than the start
+              time of the event.
+            </p>
+          </div>
+          <textarea
+            id="description "
+            name="description"
+            class="description"
+            rows="6"
+          ></textarea>
+
+          <button type="submit" class="primary-btn">Save</button>
         </form>
       </div>
+    </div>
+
+    <header>
+      <h1>Calendar</h1>
+      <div class="main-calendar-nav">
+        <button class="today-btn plain-btn">Today</button>
+        <div>
+          <button class="main navigation-btn left">&lt;</button>
+          <button class="main navigation-btn">&gt;</button>
+        </div>
+        <h2 class="date main"></h2>
+      </div>
+      <select class="mode-select plain-btn">
+        <option value="week" id="week">Week</option>
+        <option value="month" id="month">Month</option>
+      </select>
+    </header>
+
+    <main>
+      <aside>
+        <div class="mini-calendar-nav">
+          <h2 class="date month-view"></h2>
+          <div>
+            <button class="mini navigation-btn left">&lt;</button>
+            <button class="mini navigation-btn">&gt;</button>
+          </div>
+        </div>
+        <div class="mini-calendar"></div>
+        <div class="loader"></div>
+      </aside>
+
+      <div class="main-calendar"></div>
     </main>
   </body>
 
-  <script type="module" src="js/calendar.js"></script>
+  <script type="module" src="js/app.js"></script>
 </html>
