@@ -94,11 +94,14 @@ export const openEventModal = ({
 
     if (eventId) {
       updateEvent({
-        title: titleInput.value,
-        date: dateInput.value,
-        startTime: startTimeInput.value,
-        endTime: endTimeInput.value,
-        id: eventId,
+        updatedEvent: {
+          title: titleInput.value,
+          date: dateInput.value,
+          startTime: startTimeInput.value,
+          endTime: endTimeInput.value,
+          id: eventId,
+        },
+        savedEventDate: date,
       });
     } else {
       saveEvent({

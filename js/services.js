@@ -27,22 +27,27 @@ export function deleteEventFromLocalStorage(date, id) {
   });
 }
 
-export function updateEventFromLocalStorage(event) {
+export function updateEventFromLocalStorage({ updatedEvent, savedEventDate }) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const events = JSON.parse(localStorage.getItem("events")) || {};
+      const events = JSON.parse(localStorage.getItem("events"));
 
-      const updatedEvents =
-        events[event.date]?.filter(
-          (savedEvent) => savedEvent.id !== event.id
-        ) || [];
+      const filteredEvents = events[savedEventDate].filter(
+        (savedEvent) => savedEvent.id !== updatedEvent.id
+      );
 
-      updatedEvents[updatedEvents.length] = event;
+      if (updatedEvent.date !== savedEventDate) {
+        const eventsOfNewDate = events[updatedEvent.date] || [];
+        eventsOfNewDate[eventsOfNewDate.length] = updatedEvent;
+        events[updatedEvent.date] = eventsOfNewDate;
+      } else {
+        filteredEvents[filteredEvents.length] = updatedEvent;
+      }
 
-      events[event.date] = updatedEvents;
+      events[savedEventDate] = filteredEvents;
 
       localStorage.setItem("events", JSON.stringify(events));
-      resolve(event);
+      resolve(updatedEvent);
     }, 1000);
   });
 }
