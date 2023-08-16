@@ -1,4 +1,4 @@
-import { renderMiniCalendarBody } from "../views/miniCalendar.js";
+import { renderMiniCalendarBody } from "../views/index.js";
 
 export const navigateMiniCalendar = ({
   monthStartDate,

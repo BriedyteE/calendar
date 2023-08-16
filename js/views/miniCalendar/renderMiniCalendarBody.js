@@ -1,17 +1,11 @@
-import {
-  createMonthCalendarHeader,
-  createMonthCalendarBody,
-} from "../elements/index.js";
-import { getDateData } from "../utils/dateTime.js";
-import { navigateToSelectedDate } from "../handlers/index.js";
-
-import { MINI_CALENDAR_CONGIF } from "../config.js";
-
-const miniCalendar = document.querySelector(".mini-calendar");
+import { getDateData } from "../../utils/dateTime.js";
+import { createMonthCalendarBody } from "../../elements/index.js";
+import { MINI_CALENDAR_CONGIF } from "../../config.js";
 
 export const renderMiniCalendarBody = ({ monthStartDate, selectedDate }) => {
   document.querySelector(".mini-calendar .body")?.remove();
 
+  const miniCalendar = document.querySelector(".mini-calendar");
   const selected = getDateData(selectedDate);
   const current = getDateData(new Date());
 
@@ -25,11 +19,4 @@ export const renderMiniCalendarBody = ({ monthStartDate, selectedDate }) => {
   });
 
   miniCalendar.appendChild(calendarBody);
-};
-
-export const renderMiniCalendar = (calendarDates) => {
-  const header = createMonthCalendarHeader(MINI_CALENDAR_CONGIF.weekDaysCount);
-  miniCalendar.appendChild(header);
-
-  renderMiniCalendarBody(calendarDates);
 };

@@ -81,12 +81,12 @@ calendarModeSelect.addEventListener("change", () => {
   displayEvents(fetchedEvents, calendarModeSelect.value);
 });
 
+renderMainCalendar({ calendarMode, selectedDate });
+
 renderMiniCalendar({
   monthStartDate: miniCalendarMonthStart,
   selectedDate,
 });
-
-renderMainCalendar({ calendarMode, selectedDate });
 
 fetchEvents({
   onFetchStart: onEventFetchStart,

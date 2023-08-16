@@ -1,13 +1,14 @@
-import { renderMiniCalendar, renderMiniCalendarBody } from "./miniCalendar.js";
 import { renderMainCalendar, renderMainCalendarBody } from "./mainCalendar.js";
-import { displayTopLoader } from "./topLoader.js";
+import { renderMiniCalendar } from "./miniCalendar/renderMiniCalendar.js";
+import { renderMiniCalendarBody } from "./miniCalendar/renderMiniCalendarBody.js";
+import { displayTopLoader } from "./displayTopLoader.js";
 import { displayEvents } from "./events.js";
 
 export {
-  renderMiniCalendar,
-  renderMiniCalendarBody,
   renderMainCalendar,
   renderMainCalendarBody,
+  renderMiniCalendar,
+  renderMiniCalendarBody,
   displayTopLoader,
   displayEvents,
 };
