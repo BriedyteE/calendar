@@ -10,15 +10,15 @@ export function getEventsFromLocalStorage() {
 export function deleteEventFromLocalStorage(date, id) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const events = JSON.parse(localStorage.getItem("events")) || {};
+      const events = JSON.parse(localStorage.getItem("events"));
 
-      const withoutSelected =
+      const filteredEvents =
         events[date]?.filter((event) => event.id !== id) || [];
 
-      if (!withoutSelected.length) {
-        delete events[date];
+      if (filteredEvents.length) {
+        events[date] = filteredEvents;
       } else {
-        events[date] = withoutSelected;
+        delete events[date];
       }
 
       localStorage.setItem("events", JSON.stringify(events));
@@ -36,15 +36,15 @@ export function updateEventFromLocalStorage({ updatedEvent, savedEventDate }) {
         (savedEvent) => savedEvent.id !== updatedEvent.id
       );
 
-      if (updatedEvent.date !== savedEventDate) {
-        const eventsOfNewDate = events[updatedEvent.date] || [];
-        eventsOfNewDate[eventsOfNewDate.length] = updatedEvent;
-        events[updatedEvent.date] = eventsOfNewDate;
+      if (filteredEvents.length) {
+        events[savedEventDate] = filteredEvents;
       } else {
-        filteredEvents[filteredEvents.length] = updatedEvent;
+        delete events[savedEventDate];
       }
 
-      events[savedEventDate] = filteredEvents;
+      const eventsOfNewDate = events[updatedEvent.date] || [];
+      eventsOfNewDate[eventsOfNewDate.length] = updatedEvent;
+      events[updatedEvent.date] = eventsOfNewDate;
 
       localStorage.setItem("events", JSON.stringify(events));
       resolve(updatedEvent);
