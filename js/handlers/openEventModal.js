@@ -6,6 +6,7 @@ import {
   closeEventModal,
   navigateToSelectedDate,
   addEventSlot,
+  validateSelectedTime,
 } from "./index.js";
 
 export const openEventModal = ({
@@ -24,6 +25,7 @@ export const openEventModal = ({
   const endTimeInput = document.getElementById("end-time");
   const deleteButton = modalWrapper.querySelector(".delete");
   const closeButton = modalWrapper.querySelector(".close");
+  const submitButton = form.querySelector("button");
 
   deleteButton.style.display = !!eventId ? "inline-block" : "none";
   dateInput.value = date;
@@ -58,6 +60,12 @@ export const openEventModal = ({
   };
 
   startTimeInput.onchange = (e) => {
+    submitButton.removeAttribute("disabled");
+    const isValid = validateSelectedTime();
+    if (!isValid) {
+      submitButton.setAttribute("disabled", true);
+      return;
+    }
     addEventSlot({
       event: {
         date: dateInput.value,
@@ -71,6 +79,12 @@ export const openEventModal = ({
   };
 
   endTimeInput.onchange = (e) => {
+    submitButton.removeAttribute("disabled");
+    const isValid = validateSelectedTime();
+    if (!isValid) {
+      submitButton.setAttribute("disabled", true);
+      return;
+    }
     addEventSlot({
       event: {
         date: dateInput.value,

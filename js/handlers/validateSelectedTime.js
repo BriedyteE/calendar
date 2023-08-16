@@ -1,16 +1,11 @@
 import { calculateEventDurationFromInputs } from "../utils/dateTime.js";
 
-export const validateForm = () => {
+export const validateSelectedTime = () => {
   const startTimeInput = document.getElementById("start-time");
   const endTimeInput = document.getElementById("end-time");
   const dateErrorText = document.querySelector(".date-error");
-  const titleWrapper = document.querySelector(".title-wrapper");
-  const titleInput = document.getElementById("event-title");
 
-  if (!titleInput.value) {
-    titleInput.focus();
-    titleWrapper.classList.add("error");
-  }
+  dateErrorText.classList.remove("error");
 
   const eventDurationInSeconds = calculateEventDurationFromInputs(
     startTimeInput.value,

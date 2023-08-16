@@ -1,15 +1,9 @@
-// export const closeModalOnEsc = ({ e, isEventSaved, onModalClose }) => {
-//   console.log(onModalClose);
-//   if (e.key === "Escape") {
-//     closeEventModal({ isEventSaved, onModalClose });
-//   }
-// };
-
 export const closeEventModal = ({ isEventSaved }) => {
   const modalWrapper = document.querySelector(".modal-backdrop");
   const form = modalWrapper.querySelector("form");
   const eventSlot = document.querySelector(".event.open");
   const erroredItems = modalWrapper.querySelectorAll(".error");
+  const submitButton = form.querySelector("button");
 
   if (isEventSaved) {
     eventSlot.classList.remove("open");
@@ -18,7 +12,8 @@ export const closeEventModal = ({ isEventSaved }) => {
   }
 
   modalWrapper.classList.remove("visible");
+  submitButton.removeAttribute("disabled");
   erroredItems.forEach((item) => item.classList.remove("error"));
-  // document.removeEventListener("keydown", closeModalOnEsc);
+
   form.reset();
 };

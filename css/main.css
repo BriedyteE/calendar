@@ -117,6 +117,12 @@ aside {
 }
 /* BUTTONS
 -------------------------------------------------------------------  */
+button:disabled {
+  background-color: var(--light-grey-color);
+  color: var(--dark-grey-color);
+  cursor: not-allowed;
+}
+
 .primary-btn {
   background-color: var(--primary-color);
   color: var(--white-color);

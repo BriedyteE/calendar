@@ -7,7 +7,7 @@ import { fetchEvents } from "./fetchEvents.js";
 import { navigateMiniCalendar } from "./navigateMiniCalendar.js";
 import { handleMainNavigation } from "./handleMainNavigation.js";
 import { navigateToSelectedDate } from "./navigateToSelectedDate.js";
-import { validateForm } from "./validateForm.js";
+import { validateSelectedTime } from "./validateSelectedTime.js";
 import { updateEvent } from "./updateEvent.js";
 
 export {
@@ -21,5 +21,5 @@ export {
   navigateMiniCalendar,
   handleMainNavigation,
   navigateToSelectedDate,
-  validateForm,
+  validateSelectedTime,
 };
