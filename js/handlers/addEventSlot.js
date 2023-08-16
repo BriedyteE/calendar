@@ -35,7 +35,6 @@ export const addEventSlot = ({
       title: title ? `${title} ${startTime}` : `(No title) ${startTime}`,
     });
 
-    console.log(date);
     const columnOfTheDate = mainCalendar
       .querySelector(`.main-calendar time[datetime="${date}"]`)
       .closest(".column");
