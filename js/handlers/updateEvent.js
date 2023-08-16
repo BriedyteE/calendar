@@ -1,6 +1,6 @@
 import { createLoadingSpinner } from "../elements/index.js";
 import { updateEventFromLocalStorage } from "../services.js";
-import { closeEventModal } from "./index.js";
+import { closeEventModal, addEventSlot } from "./index.js";
 
 export const updateEvent = async ({ updatedEvent, savedEventDate }) => {
   const modal = document.querySelector(".event-modal");
@@ -14,6 +14,7 @@ export const updateEvent = async ({ updatedEvent, savedEventDate }) => {
     });
 
     modal.removeChild(spinner);
+    addEventSlot({ event: newEvent, isModalOpen: true });
     closeEventModal({ isEventSaved: true });
   } catch (e) {
     modal.removeChild(spinner);
