@@ -4,7 +4,6 @@ import {
   deleteEvent,
   updateEvent,
   closeEventModal,
-  navigateToSelectedDate,
   addEventSlot,
   validateSelectedTime,
 } from "./index.js";
@@ -46,7 +45,7 @@ export const openEventModal = ({
   titleInput.onblur = () => titleWrapper.classList.remove("error");
 
   dateInput.onchange = (e) => {
-    navigateToSelectedDate(new Date(e.target.value));
+    // navigateToSelectedDate(new Date(e.target.value));
     addEventSlot({
       event: {
         date: e.target.value,

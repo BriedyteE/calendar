@@ -25,6 +25,16 @@ export const getFirstDateOfWeek = (date) => {
   return new Date(year, month, dayOfMonth - dayOfWeek + 1);
 };
 
+export const changeDateByWeek = ({ date, isBack }) => {
+  const day = date.getDate();
+  date.setDate(isBack ? day - 7 : day + 7);
+};
+
+export const changeDateByMonth = ({ date, isBack }) => {
+  const month = date.getMonth();
+  date.setMonth(isBack ? month - 1 : month + 1);
+};
+
 const convertInputTimeToSeconds = (time) => {
   const [hour, seconds] = time.split(":");
   return Number(hour) * 60 + Number(seconds);

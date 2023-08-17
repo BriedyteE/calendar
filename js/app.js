@@ -1,17 +1,19 @@
 import { MAIN_CALENDAR_MODES } from "./constants.js";
 
+import { fetchEvents, navigateMainCal } from "./handlers/index.js";
 import {
-  fetchEvents,
-  navigateMiniCalendar,
-  handleMainNavigation,
-  navigateToSelectedDate,
-} from "./handlers/index.js";
+  getDateData,
+  changeDateByWeek,
+  changeDateByMonth,
+} from "./utils/dateTime.js";
 
 import {
   renderMiniCalendar,
   renderMainCalendar,
   displayTopLoader,
   displayEvents,
+  renderMiniCalendarBody,
+  highliteSelectedDayInMiniCal,
 } from "./views/index.js";
 
 const calendarModeSelect = document.querySelector("select.mode-select");
@@ -46,6 +48,29 @@ const onEventsLoadSuccess = (events) => {
   }
 };
 
+const navigateToSelectedDate = (date) => {
+  const { year, month, formattedDate } = getDateData(date);
+  selectedDate = date;
+  miniCalendarMonthStart = new Date(year, month, 1);
+  const cellOfSelectedDay = document
+    .querySelector(
+      `.mini-calendar .current-month time[datetime="${formattedDate}"]`
+    )
+    ?.closest(".cell");
+
+  if (cellOfSelectedDay) {
+    highliteSelectedDayInMiniCal(cellOfSelectedDay);
+  } else {
+    renderMiniCalendarBody({
+      monthStartDate: miniCalendarMonthStart,
+      selectedDate,
+      onCellClick: (_e, date) => navigateToSelectedDate(date),
+    });
+  }
+
+  navigateMainCal(formattedDate);
+};
+
 document.querySelector(".today-btn").addEventListener("click", () => {
   selectedDate = new Date(currDate);
   miniCalendarMonthStart = new Date(
@@ -58,19 +83,21 @@ document.querySelector(".today-btn").addEventListener("click", () => {
 
 document.querySelectorAll(".main.navigation-btn").forEach((button, index) => {
   button.addEventListener("click", () => {
-    handleMainNavigation({
-      selectedDate,
+    changeDateByWeek({
+      date: selectedDate,
       isBack: index === 0,
     });
+    navigateToSelectedDate(selectedDate);
   });
 });
 
 document.querySelectorAll(".mini.navigation-btn").forEach((button, index) => {
   button.addEventListener("click", () => {
-    navigateMiniCalendar({
+    changeDateByMonth({ date: miniCalendarMonthStart, isBack: index === 0 });
+    renderMiniCalendarBody({
       monthStartDate: miniCalendarMonthStart,
       selectedDate,
-      isBack: index === 0,
+      onCellClick: (_e, date) => navigateToSelectedDate(date),
     });
   });
 });
@@ -86,6 +113,7 @@ renderMainCalendar({ calendarMode, selectedDate });
 renderMiniCalendar({
   monthStartDate: miniCalendarMonthStart,
   selectedDate,
+  onCellClick: (_e, date) => navigateToSelectedDate(date),
 });
 
 fetchEvents({
