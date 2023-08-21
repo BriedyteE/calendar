@@ -1,4 +1,4 @@
-import { addEventSlot } from "../../handlers/index.js";
+import { addEventSlot } from "../index.js";
 
 import { getFetchedEvents } from "../../handlers/handleEvents.js";
 

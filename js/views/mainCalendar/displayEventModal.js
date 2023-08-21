@@ -2,7 +2,7 @@
 import { validateSelectedTime } from "../../handlers/index.js";
 
 export const displayEventModal = ({
-  event: { date, startTime, endTime, title = "", id = null },
+  event: { date, startTime, endTime, title = "", description = "", id = null },
   onDateTimeChange,
   onClose,
   onSubmit,
@@ -15,6 +15,7 @@ export const displayEventModal = ({
   const titleInput = document.getElementById("event-title");
   const startTimeInput = document.getElementById("start-time");
   const endTimeInput = document.getElementById("end-time");
+  const desciptionInput = form.querySelector(".description");
   const deleteButton = modalWrapper.querySelector(".delete");
   const closeButton = modalWrapper.querySelector(".close");
   const submitButton = form.querySelector("button");
@@ -24,6 +25,9 @@ export const displayEventModal = ({
   startTimeInput.value = startTime;
   endTimeInput.value = endTime;
   titleInput.value = title;
+  desciptionInput.value = description;
+
+  console.log(desciptionInput);
 
   const getEvent = () => {
     return {
@@ -31,6 +35,7 @@ export const displayEventModal = ({
       startTime: startTimeInput.value,
       endTime: endTimeInput.value,
       title: titleInput.value,
+      description: desciptionInput.value,
       id,
     };
   };
@@ -88,7 +93,6 @@ export const displayEventModal = ({
     }
 
     const event = getEvent();
-    console.log("NUUU");
     onSubmit(event, date);
   };
 };

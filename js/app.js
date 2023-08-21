@@ -143,7 +143,7 @@ const onTimeSlotClick = (event) => {
   });
 };
 
-const onEventsLoadSuccess = (events) => {
+const onEventsLoadSuccess = () => {
   displayTopLoader(false);
   displayEvents({ onTimeSlotClick, calendarMode });
 };
