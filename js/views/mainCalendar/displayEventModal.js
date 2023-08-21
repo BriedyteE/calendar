@@ -27,8 +27,6 @@ export const displayEventModal = ({
   titleInput.value = title;
   desciptionInput.value = description;
 
-  console.log(desciptionInput);
-
   const getEvent = () => {
     return {
       date: dateInput.value,

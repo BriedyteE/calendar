@@ -175,6 +175,11 @@ const onMainCalendarCellClick = (e, date, cellIndex) => {
   }
 };
 
+document.querySelector(".today-btn").addEventListener("click", () => {
+  const { formattedDate } = getDateData(currDate);
+  navigateToSelectedDate(formattedDate);
+});
+
 document.querySelectorAll(".mini.navigation-btn").forEach((button, index) => {
   button.addEventListener("click", () => {
     const month = firstDateOfMiniCal.getMonth();
@@ -188,24 +193,32 @@ document.querySelectorAll(".mini.navigation-btn").forEach((button, index) => {
   });
 });
 
-document.querySelector(".today-btn").addEventListener("click", () => {
-  const { formattedDate } = getDateData(currDate);
-  navigateToSelectedDate(formattedDate);
-});
-
 document.querySelectorAll(".main.navigation-btn").forEach((button, index) => {
   button.addEventListener("click", () => {
     const day = selectedDate.getDate();
 
-    const { formattedDate } = getDateData(
-      new Date(
-        selectedDate.getFullYear(),
-        selectedDate.getMonth(),
-        index === 0 ? day - 7 : day + 7
-      )
-    );
+    if (calendarMode === MAIN_CALENDAR_MODES.Week) {
+      const { formattedDate } = getDateData(
+        new Date(
+          selectedDate.getFullYear(),
+          selectedDate.getMonth(),
+          index === 0 ? day - 7 : day + 7
+        )
+      );
 
-    navigateToSelectedDate(formattedDate);
+      navigateToSelectedDate(formattedDate);
+    } else {
+      const month = selectedDate.getMonth();
+      const { formattedDate } = getDateData(
+        new Date(
+          selectedDate.getFullYear(),
+          index === 0 ? month - 1 : month + 1,
+          1
+        )
+      );
+
+      navigateToSelectedDate(formattedDate);
+    }
   });
 });
 
