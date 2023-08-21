@@ -1,22 +1,20 @@
-import { createLoadingSpinner } from "../elements/index.js";
 import { closeEventModal } from "./index.js";
 import { deleteEventFromLocalStorage } from "../services.js";
+import { displayModalLoader } from "../views/index.js";
 
-export const deleteEvent = (date, eventId) => {
-  const modal = document.querySelector(".event-modal");
-  const spinner = createLoadingSpinner();
+export const deleteEvent = ({ savedDate, eventId, onSuccess, onError }) => {
+  displayModalLoader(true);
 
   async function deleteEvent() {
     try {
-      await deleteEventFromLocalStorage(date, eventId);
-      modal.removeChild(spinner);
-      closeEventModal({ isEventSaved: false });
+      await deleteEventFromLocalStorage(savedDate, eventId);
+      displayModalLoader(false);
+      onSuccess();
     } catch (error) {
-      modal.removeChild(spinner);
-      console.log(error);
+      displayModalLoader(false);
+      onError(error);
     }
   }
 
-  modal.appendChild(spinner);
   deleteEvent();
 };

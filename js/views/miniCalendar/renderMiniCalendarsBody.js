@@ -1,8 +1,9 @@
 import { getDateData } from "../../utils/dateTime.js";
 import { createMonthCalendarBody } from "../../elements/index.js";
 import { MINI_CALENDAR_CONGIF } from "../../config.js";
+import { displayMiniCalDate } from "./displayMiniCalDate.js";
 
-export const renderMiniCalendarBody = ({
+export const renderMiniCalendarsBody = ({
   monthStartDate,
   selectedDate,
   onCellClick,
@@ -19,8 +20,10 @@ export const renderMiniCalendarBody = ({
     formattedSelectedDate: selected.formattedDate,
     weekDaysCount: MINI_CALENDAR_CONGIF.weekDaysCount,
     rowsCount: MINI_CALENDAR_CONGIF.bodyRowsCount,
-    onCellClick,
+    onCellClick: (_e, date) => onCellClick(date),
   });
 
   miniCalendar.appendChild(calendarBody);
+
+  displayMiniCalDate(monthStartDate);
 };

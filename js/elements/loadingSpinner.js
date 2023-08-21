@@ -1,9 +1,9 @@
 import { createNewElement } from "../utils/elements.js";
 
-export const createLoadingSpinner = () => {
+export const createLoadingSpinner = (containerClassName) => {
   const spinnerContainer = createNewElement({
     elementTag: "div",
-    attributes: { className: "spinner-container" },
+    attributes: { className: containerClassName },
   });
 
   spinnerContainer.appendChild(

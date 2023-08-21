@@ -1,8 +1,8 @@
-export const highliteSelectedDayInMiniCal = (selectedDate) => {
+export const highliteSelectedDayInMiniCal = (selectedDateCell) => {
   const className = "selected-day";
   document
     .querySelector(`.mini-calendar .${className}`)
     ?.classList.remove(className);
 
-  selectedDate.classList.add(className);
+  selectedDateCell.classList.add(className);
 };

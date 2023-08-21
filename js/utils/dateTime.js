@@ -1,3 +1,5 @@
+import { MONTHS } from "../constants.js";
+
 export const getDateData = (date) => {
   const dayOfWeek = date.getDay();
   const dayOfMonth = date.getDate();
@@ -40,15 +42,21 @@ const convertInputTimeToSeconds = (time) => {
   return Number(hour) * 60 + Number(seconds);
 };
 
-export const calculateEventDurationFromInputs = (startTime, endTime) =>
+export const calculateEventDuration = (startTime, endTime) =>
   convertInputTimeToSeconds(endTime) - convertInputTimeToSeconds(startTime);
 
-export const getEventRangeFromCellIndex = ({ isAtHourStart, cellIndex }) => {
+export const getEventTimeFromCellClick = (e, cellIndex) => {
+  const isStartOfHour = e.offsetY < e.target.offsetHeight / 2;
+
   const cellHour = cellIndex - 1 <= 9 ? `0${cellIndex - 1}` : cellIndex - 1;
   const nextCellHour = cellIndex - 1 < 9 ? `0${cellIndex}` : cellIndex;
 
   return {
-    startTime: `${cellHour}:${isAtHourStart ? "00" : "30"}`,
-    endTime: isAtHourStart ? `${cellHour}:30` : `${nextCellHour}:00`,
+    startTime: `${cellHour}:${isStartOfHour ? "00" : "30"}`,
+    endTime: isStartOfHour ? `${cellHour}:30` : `${nextCellHour}:00`,
   };
+};
+
+export const getMonthDateText = (date) => {
+  return `${date.getFullYear()} ${MONTHS[date.getMonth()]}`;
 };

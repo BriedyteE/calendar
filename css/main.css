@@ -530,14 +530,11 @@ select {
 -------------------------------------------------------------------  */
 
 .event {
-  position: absolute;
   left: 8;
   width: 90%;
-  height: 50%;
   background-color: var(--primary-lighter-color);
   color: var(--white-color);
   text-align: left;
-  top: 0;
   z-index: 2;
   border: 1px solid white;
   border-radius: 5px;
@@ -545,12 +542,16 @@ select {
   font-weight: 200;
   cursor: pointer;
   overflow: hidden;
+}
+
+.main-calendar.week .event {
+  position: absolute;
+  top: 0;
   min-height: 30%;
 }
 
-.month-cell .event {
-  height: 25px;
-  position: static;
+.main-calendar.month .event {
+  height: 20px;
 }
 
 .event.open {

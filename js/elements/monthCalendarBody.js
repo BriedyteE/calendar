@@ -58,7 +58,7 @@ export const createMonthCalendarBody = ({
       );
 
       cell.addEventListener("click", (e) => {
-        onCellClick?.(e, cellDate.date);
+        onCellClick?.(e, cellDate.formattedDate);
       });
     }
   }

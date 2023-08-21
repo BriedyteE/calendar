@@ -1,123 +1,276 @@
+"use strict";
+
 import { MAIN_CALENDAR_MODES } from "./constants.js";
+import { MAIN_CALENDAR_CONFIG, MINI_CALENDAR_CONGIF } from "./config.js";
 
-import { fetchEvents, navigateMainCal } from "./handlers/index.js";
-import {
-  getDateData,
-  changeDateByWeek,
-  changeDateByMonth,
-} from "./utils/dateTime.js";
+import { getEventTimeFromCellClick, getDateData } from "./utils/dateTime.js";
 
 import {
-  renderMiniCalendar,
-  renderMainCalendar,
-  displayTopLoader,
+  getCellByDate,
+  fetchEvents,
+  saveEvent,
+  updateEvent,
+  closeEventModal,
+  deleteEvent,
+} from "./handlers/index.js";
+
+import {
+  createHoursColumn,
+  createMonthCalendarHeader,
+} from "./elements/index.js";
+
+import {
+  renderMainCalendarsBody,
   displayEvents,
-  renderMiniCalendarBody,
+  renderMiniCalendarsBody,
   highliteSelectedDayInMiniCal,
+  displayEventModal,
+  addEventSlot,
+  displayTopLoader,
 } from "./views/index.js";
 
 const calendarModeSelect = document.querySelector("select.mode-select");
 const mainCalendar = document.querySelector(".main-calendar");
-const calendarMode =
-  localStorage.getItem("mainCalendarMode") || MAIN_CALENDAR_MODES.Week;
-
-mainCalendar.classList.add(calendarMode);
-
 const currDate = new Date();
+
+let fetchedEvents;
 let selectedDate = new Date();
-let miniCalendarMonthStart = new Date(
+let firstDateOfMiniCal = new Date(
   currDate.getFullYear(),
   currDate.getMonth(),
   1
 );
+let calendarMode =
+  localStorage.getItem("mainCalendarMode") || MAIN_CALENDAR_MODES.Week;
+calendarModeSelect.value = calendarMode;
 
-let fetchedEvents;
-let areEventsFetching = false;
+const addSlotAndCloseModal = (event) => {
+  addEventSlot({
+    event: event,
+    isModalOpen: true,
+    onClick: onTimeSlotClick,
+    calendarMode,
+  });
 
-const onEventFetchStart = () => {
-  areEventsFetching = true;
-  displayTopLoader(true);
+  closeEventModal({ isEventSaved: true });
 };
 
-const onEventsLoadSuccess = (events) => {
-  displayTopLoader(false);
-  areEventsFetching = false;
-  if (events) {
-    fetchedEvents = events;
-    displayEvents(events);
-  }
-};
-
-const navigateToSelectedDate = (date) => {
-  const { year, month, formattedDate } = getDateData(date);
-  selectedDate = date;
-  miniCalendarMonthStart = new Date(year, month, 1);
-  const cellOfSelectedDay = document
-    .querySelector(
-      `.mini-calendar .current-month time[datetime="${formattedDate}"]`
-    )
-    ?.closest(".cell");
+const navigateMiniCalendarByDate = (formattedDate) => {
+  const cellOfSelectedDay = getCellByDate("mini-calendar", formattedDate);
 
   if (cellOfSelectedDay) {
     highliteSelectedDayInMiniCal(cellOfSelectedDay);
   } else {
-    renderMiniCalendarBody({
-      monthStartDate: miniCalendarMonthStart,
+    renderMiniCalendarsBody({
+      monthStartDate: firstDateOfMiniCal,
       selectedDate,
-      onCellClick: (_e, date) => navigateToSelectedDate(date),
+      onCellClick: navigateToSelectedDate,
     });
   }
-
-  navigateMainCal(formattedDate);
 };
 
-document.querySelector(".today-btn").addEventListener("click", () => {
-  selectedDate = new Date(currDate);
-  miniCalendarMonthStart = new Date(
-    currDate.getFullYear(),
-    currDate.getMonth(),
+const navigateMainCalendarByDate = (formattedDate) => {
+  const selectors = {
+    [MAIN_CALENDAR_MODES.Week]: `.main-calendar time[datetime="${formattedDate}"]`,
+    [MAIN_CALENDAR_MODES.Month]: `.main-calendar .current-month time[datetime="${formattedDate}"]`,
+  };
+  const selectedDayInMainCal = document.querySelector(selectors[calendarMode]);
+
+  if (!selectedDayInMainCal) {
+    renderMainCalendarsBody({
+      calendarMode,
+      selectedDate,
+      onCellClick: onMainCalendarCellClick,
+      events: fetchedEvents,
+    });
+    displayEvents({ events: fetchedEvents, onTimeSlotClick, calendarMode });
+  }
+};
+
+const navigateToSelectedDate = (formattedDate) => {
+  selectedDate = new Date(formattedDate);
+  firstDateOfMiniCal = new Date(
+    selectedDate.getFullYear(),
+    selectedDate.getMonth(),
     1
   );
-  navigateToSelectedDate(selectedDate);
+
+  navigateMiniCalendarByDate(formattedDate);
+  navigateMainCalendarByDate(formattedDate);
+};
+
+const onDateTimeChange = (event) => {
+  navigateToSelectedDate(event.date);
+  addEventSlot({
+    event,
+    isModalOpen: true,
+    onClick: onTimeSlotClick,
+    calendarMode,
+  });
+};
+
+const onSubmit = (event, savedDate) => {
+  if (event.id) {
+    updateEvent({
+      updatedEvent: event,
+      savedDate: savedDate,
+      onSuccess: addSlotAndCloseModal,
+      onError: (e) => console.log(e),
+    });
+  } else {
+    saveEvent({
+      event,
+      onSuccess: addSlotAndCloseModal,
+      onError: (e) => console.log(e),
+    });
+  }
+};
+
+const onDeleteClick = (savedDate, eventId) => {
+  deleteEvent({
+    savedDate,
+    eventId,
+    onSuccess: () => closeEventModal({ isEventSaved: false }),
+    onError: (e) => console.log(e),
+  });
+};
+
+const onTimeSlotClick = (event) => {
+  displayEventModal({
+    event,
+    onClose: closeEventModal,
+    onDateTimeChange,
+    onSubmit,
+    onDelete: onDeleteClick,
+  });
+};
+
+const onEventsLoadSuccess = (events) => {
+  displayTopLoader(false);
+
+  if (events) {
+    fetchedEvents = events;
+    displayEvents({ events, onTimeSlotClick, calendarMode });
+  }
+};
+
+const onMainCalendarCellClick = (e, date, cellIndex) => {
+  if (e.target === e.currentTarget) {
+    const isWeekCalendar = calendarMode === MAIN_CALENDAR_MODES.Week;
+
+    const { startTime, endTime } = isWeekCalendar
+      ? getEventTimeFromCellClick(e, cellIndex)
+      : { startTime: "00:00", endTime: "00:30" };
+
+    const event = { date, startTime, endTime };
+
+    addEventSlot({
+      event,
+      isModalOpen: true,
+      onClick: onTimeSlotClick,
+      calendarMode,
+    });
+
+    displayEventModal({
+      event,
+      onDateTimeChange,
+      onSubmit,
+      onClose: closeEventModal,
+      onDelete: onDeleteClick,
+    });
+  }
+};
+
+document.querySelectorAll(".mini.navigation-btn").forEach((button, index) => {
+  button.addEventListener("click", () => {
+    const month = firstDateOfMiniCal.getMonth();
+    firstDateOfMiniCal.setMonth(index === 0 ? month - 1 : month + 1);
+
+    renderMiniCalendarsBody({
+      monthStartDate: firstDateOfMiniCal,
+      selectedDate,
+      onCellClick: navigateToSelectedDate,
+    });
+  });
+});
+
+document.querySelector(".today-btn").addEventListener("click", () => {
+  const { formattedDate } = getDateData(currDate);
+  navigateToSelectedDate(formattedDate);
 });
 
 document.querySelectorAll(".main.navigation-btn").forEach((button, index) => {
   button.addEventListener("click", () => {
-    changeDateByWeek({
-      date: selectedDate,
-      isBack: index === 0,
-    });
-    navigateToSelectedDate(selectedDate);
+    const day = selectedDate.getDate();
+
+    const { formattedDate } = getDateData(
+      new Date(
+        selectedDate.getFullYear(),
+        selectedDate.getMonth(),
+        index === 0 ? day - 7 : day + 7
+      )
+    );
+
+    navigateToSelectedDate(formattedDate);
   });
 });
 
-document.querySelectorAll(".mini.navigation-btn").forEach((button, index) => {
-  button.addEventListener("click", () => {
-    changeDateByMonth({ date: miniCalendarMonthStart, isBack: index === 0 });
-    renderMiniCalendarBody({
-      monthStartDate: miniCalendarMonthStart,
-      selectedDate,
-      onCellClick: (_e, date) => navigateToSelectedDate(date),
-    });
-  });
-});
-
-calendarModeSelect.addEventListener("change", () => {
+calendarModeSelect.addEventListener("change", (e) => {
+  const currMode = calendarMode;
+  calendarMode = e.target.value;
   localStorage.setItem("mainCalendarMode", calendarModeSelect.value);
-  renderMainCalendar({ calendarMode: calendarModeSelect.value, selectedDate });
-  displayEvents(fetchedEvents, calendarModeSelect.value);
+  calendarModeSelect.value = e.target.value;
+
+  mainCalendar.classList.replace(currMode, calendarMode);
+  renderMainCalendar({
+    calendarMode: calendarModeSelect.value,
+    selectedDate,
+    setSelectedDate: navigateToSelectedDate,
+  });
+
+  displayEvents({ events: fetchedEvents, onTimeSlotClick, calendarMode });
 });
 
-renderMainCalendar({ calendarMode, selectedDate });
+const renderMainCalendar = () => {
+  mainCalendar.classList.add(calendarMode);
+  mainCalendar.innerHTML = "";
 
-renderMiniCalendar({
-  monthStartDate: miniCalendarMonthStart,
-  selectedDate,
-  onCellClick: (_e, date) => navigateToSelectedDate(date),
-});
+  if (calendarMode === MAIN_CALENDAR_MODES.Week) {
+    const hoursColumn = createHoursColumn(MAIN_CALENDAR_CONFIG.week.hoursCount);
+    mainCalendar.appendChild(hoursColumn);
+  } else {
+    const header = createMonthCalendarHeader(
+      MAIN_CALENDAR_CONFIG.month.weekDaysCount
+    );
+    mainCalendar.appendChild(header);
+  }
+
+  renderMainCalendarsBody({
+    calendarMode,
+    selectedDate,
+    onCellClick: onMainCalendarCellClick,
+    events: fetchedEvents,
+  });
+};
+
+export const renderMiniCalendar = () => {
+  const miniCalendar = document.querySelector(".mini-calendar");
+
+  const header = createMonthCalendarHeader(MINI_CALENDAR_CONGIF.weekDaysCount);
+  miniCalendar.appendChild(header);
+
+  renderMiniCalendarsBody({
+    monthStartDate: firstDateOfMiniCal,
+    selectedDate,
+    onCellClick: navigateToSelectedDate,
+  });
+};
+
+renderMiniCalendar();
+renderMainCalendar();
 
 fetchEvents({
-  onFetchStart: onEventFetchStart,
-  onSuccess: (events) => onEventsLoadSuccess(events),
+  onFetchStart: () => displayTopLoader(true),
+  onSuccess: onEventsLoadSuccess,
   onError: (e) => console.log(e),
 });

@@ -1,23 +1,43 @@
-import { createLoadingSpinner } from "../elements/index.js";
 import { updateEventFromLocalStorage } from "../services.js";
-import { closeEventModal, addEventSlot } from "./index.js";
+import { displayModalLoader } from "../views/index.js";
 
-export const updateEvent = async ({ updatedEvent, savedEventDate }) => {
-  const modal = document.querySelector(".event-modal");
-  const spinner = createLoadingSpinner();
+export let fetchedEvents;
+
+export const updateEvent = async ({
+  updatedEvent,
+  savedDate,
+  onSuccess,
+  onError,
+}) => {
+  displayModalLoader(true);
 
   try {
-    modal.appendChild(spinner);
     const newEvent = await updateEventFromLocalStorage({
       updatedEvent,
-      savedEventDate,
+      savedDate,
     });
+    onSuccess(newEvent);
 
-    modal.removeChild(spinner);
-    addEventSlot({ event: newEvent, isModalOpen: true });
-    closeEventModal({ isEventSaved: true });
+    displayModalLoader(false);
   } catch (e) {
-    modal.removeChild(spinner);
-    console.log("Error when saving event");
+    onError(e);
+    displayModalLoader(false);
   }
+};
+
+export const deleteEvent = ({ savedDate, eventId, onSuccess, onError }) => {
+  displayModalLoader(true);
+
+  async function deleteEvent() {
+    try {
+      await deleteEventFromLocalStorage(savedDate, eventId);
+      displayModalLoader(false);
+      onSuccess();
+    } catch (error) {
+      displayModalLoader(false);
+      onError(error);
+    }
+  }
+
+  deleteEvent();
 };
