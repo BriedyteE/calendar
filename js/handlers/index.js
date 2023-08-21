@@ -1,19 +1,24 @@
 import { addEventSlot } from "../views/mainCalendar/addEventSlot.js";
 import { closeEventModal } from "./closeEventModal.js";
-import { saveEvent } from "./saveEvent.js";
-import { deleteEvent } from "./deleteEvent.js";
-import { fetchEvents } from "./fetchEvents.js";
 import { validateSelectedTime } from "./validateSelectedTime.js";
-import { updateEvent } from "./updateEvent.js";
 import { getCellByDate } from "./getCellByDate.js";
+
+import {
+  saveEvent,
+  deleteEvent,
+  fetchEvents,
+  updateEvent,
+  getFetchedEvents,
+} from "./handleEvents.js";
 
 export {
   addEventSlot,
   closeEventModal,
+  validateSelectedTime,
+  getCellByDate,
+  getFetchedEvents,
   fetchEvents,
   saveEvent,
   updateEvent,
   deleteEvent,
-  validateSelectedTime,
-  getCellByDate,
 };

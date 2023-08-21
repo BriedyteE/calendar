@@ -1,3 +1,9 @@
+import {
+  addEventToEventsList,
+  deleteEventFromEventsList,
+  updateEventFromEventsList,
+} from "./utils/eventList.js";
+
 export function getEventsFromLocalStorage() {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -12,16 +18,9 @@ export function deleteEventFromLocalStorage(date, id) {
     setTimeout(() => {
       const events = JSON.parse(localStorage.getItem("events"));
 
-      const filteredEvents =
-        events[date]?.filter((event) => event.id !== id) || [];
+      const updatedEvents = deleteEventFromEventsList(events, date, id);
 
-      if (filteredEvents.length) {
-        events[date] = filteredEvents;
-      } else {
-        delete events[date];
-      }
-
-      localStorage.setItem("events", JSON.stringify(events));
+      localStorage.setItem("events", JSON.stringify(updatedEvents));
       resolve();
     }, 1000);
   });
@@ -32,21 +31,13 @@ export function updateEventFromLocalStorage({ updatedEvent, savedDate }) {
     setTimeout(() => {
       const events = JSON.parse(localStorage.getItem("events"));
 
-      const filteredEvents = events[savedDate].filter(
-        (savedEvent) => savedEvent.id !== updatedEvent.id
+      const updatedEvents = updateEventFromEventsList(
+        events,
+        updatedEvent,
+        savedDate
       );
 
-      if (filteredEvents.length) {
-        events[savedDate] = filteredEvents;
-      } else {
-        delete events[savedDate];
-      }
-
-      const eventsOfNewDate = events[updatedEvent.date] || [];
-      eventsOfNewDate[eventsOfNewDate.length] = updatedEvent;
-      events[updatedEvent.date] = eventsOfNewDate;
-
-      localStorage.setItem("events", JSON.stringify(events));
+      localStorage.setItem("events", JSON.stringify(updatedEvents));
       resolve(updatedEvent);
     }, 1000);
   });
@@ -55,14 +46,15 @@ export function updateEventFromLocalStorage({ updatedEvent, savedDate }) {
 export function saveEventToLocalStorage(event) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const events = JSON.parse(localStorage.getItem("events")) || {};
-      const eventsOfSelectedDate = events[event.date] || [];
-      const newEvent = { ...event, id: crypto.randomUUID() };
+      const events = JSON.parse(localStorage.getItem("events"));
+      const newEvent = {
+        ...event,
+        id: crypto.randomUUID(),
+      };
 
-      eventsOfSelectedDate[eventsOfSelectedDate.length] = newEvent;
-      events[event.date] = eventsOfSelectedDate;
+      const updatedEvents = addEventToEventsList(events, newEvent);
 
-      localStorage.setItem("events", JSON.stringify(events));
+      localStorage.setItem("events", JSON.stringify(updatedEvents));
       resolve(newEvent);
     }, 1200);
   });

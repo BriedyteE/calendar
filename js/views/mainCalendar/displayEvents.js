@@ -1,9 +1,12 @@
 import { addEventSlot } from "../../handlers/index.js";
 
-export const displayEvents = ({ events, onTimeSlotClick, calendarMode }) => {
-  if (events) {
+import { getFetchedEvents } from "../../handlers/handleEvents.js";
+
+export const displayEvents = ({ onTimeSlotClick, calendarMode }) => {
+  const fetchedEvents = getFetchedEvents();
+  if (fetchedEvents) {
     document.querySelectorAll(".main-calendar time").forEach((timeCell) => {
-      const dayEvents = events[timeCell.getAttribute("datetime")];
+      const dayEvents = fetchedEvents[timeCell.getAttribute("datetime")];
 
       dayEvents?.forEach((event) => {
         addEventSlot({

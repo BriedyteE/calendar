@@ -88,6 +88,7 @@ export const displayEventModal = ({
     }
 
     const event = getEvent();
+    console.log("NUUU");
     onSubmit(event, date);
   };
 };

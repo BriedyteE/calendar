@@ -33,7 +33,6 @@ const calendarModeSelect = document.querySelector("select.mode-select");
 const mainCalendar = document.querySelector(".main-calendar");
 const currDate = new Date();
 
-let fetchedEvents;
 let selectedDate = new Date();
 let firstDateOfMiniCal = new Date(
   currDate.getFullYear(),
@@ -81,9 +80,8 @@ const navigateMainCalendarByDate = (formattedDate) => {
       calendarMode,
       selectedDate,
       onCellClick: onMainCalendarCellClick,
-      events: fetchedEvents,
     });
-    displayEvents({ events: fetchedEvents, onTimeSlotClick, calendarMode });
+    displayEvents({ onTimeSlotClick, calendarMode });
   }
 };
 
@@ -147,11 +145,7 @@ const onTimeSlotClick = (event) => {
 
 const onEventsLoadSuccess = (events) => {
   displayTopLoader(false);
-
-  if (events) {
-    fetchedEvents = events;
-    displayEvents({ events, onTimeSlotClick, calendarMode });
-  }
+  displayEvents({ onTimeSlotClick, calendarMode });
 };
 
 const onMainCalendarCellClick = (e, date, cellIndex) => {
@@ -228,7 +222,7 @@ calendarModeSelect.addEventListener("change", (e) => {
     setSelectedDate: navigateToSelectedDate,
   });
 
-  displayEvents({ events: fetchedEvents, onTimeSlotClick, calendarMode });
+  displayEvents({ onTimeSlotClick, calendarMode });
 });
 
 const renderMainCalendar = () => {
@@ -249,7 +243,6 @@ const renderMainCalendar = () => {
     calendarMode,
     selectedDate,
     onCellClick: onMainCalendarCellClick,
-    events: fetchedEvents,
   });
 };
 

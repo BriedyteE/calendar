@@ -9,6 +9,7 @@ import {
 import { displayMainCalDate } from "./displayMainCalDate.js";
 
 import { getDateData, getFirstDateOfWeek } from "../../utils/dateTime.js";
+import { getFetchedEvents } from "../../handlers/index.js";
 
 export const renderMainCalendarsBody = ({
   calendarMode,
