@@ -37,7 +37,7 @@ export const changeDateByMonth = ({ date, isBack }) => {
   date.setMonth(isBack ? month - 1 : month + 1);
 };
 
-const convertInputTimeToSeconds = (time) => {
+export const convertInputTimeToSeconds = (time) => {
   const [hour, seconds] = time.split(":");
   return Number(hour) * 60 + Number(seconds);
 };

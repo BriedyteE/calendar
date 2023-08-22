@@ -1,4 +1,7 @@
-import { calculateEventDuration } from "../../utils/dateTime.js";
+import {
+  calculateEventDuration,
+  convertInputTimeToSeconds,
+} from "../../utils/dateTime.js";
 import { createEventSlot } from "../../elements/eventSlot.js";
 import { MAIN_CALENDAR_MODES } from "../../constants.js";
 
@@ -25,6 +28,7 @@ export const addEventSlot = ({
     topPossition: isWeekCalendar
       ? `${(Number(startSeconds) * 100) / 60}%`
       : null,
+    startTime: convertInputTimeToSeconds(startTime),
   });
 
   if (isWeekCalendar) {
@@ -43,7 +47,16 @@ export const addEventSlot = ({
     const cellOfTheDate = mainCalendar
       .querySelector(`.main-calendar time[datetime="${date}"]`)
       .closest(".cell");
+    const eventsInCell = [...cellOfTheDate.querySelectorAll(".event")];
+    const nextEventSlot = eventsInCell.find(
+      (slot) =>
+        Number(slot.dataset.starttime) >= Number(eventSlot.dataset.starttime)
+    );
 
-    cellOfTheDate.appendChild(eventSlot);
+    if (nextEventSlot) {
+      cellOfTheDate.insertBefore(eventSlot, nextEventSlot);
+    } else {
+      cellOfTheDate.appendChild(eventSlot);
+    }
   }
 };

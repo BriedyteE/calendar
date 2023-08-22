@@ -6,10 +6,14 @@ export const createEventSlot = ({
   onClick,
   isModalOpen,
   title,
+  startTime,
 }) => {
   const eventSlot = createNewElement({
     elementTag: "div",
-    attributes: { className: isModalOpen ? "event open" : "event" },
+    attributes: {
+      class: isModalOpen ? "event open" : "event",
+      "data-starttime": startTime,
+    },
     textContent: title,
   });
 

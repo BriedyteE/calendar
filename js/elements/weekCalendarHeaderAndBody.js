@@ -11,7 +11,7 @@ export const createWeekCalendarHeaderAndBody = ({
 }) => {
   const caldendarBody = createNewElement({
     elementTag: "div",
-    attributes: { className: "body" },
+    attributes: { class: "body" },
   });
 
   const firstDate = getDateData(firstDateOfWeek);
@@ -20,7 +20,7 @@ export const createWeekCalendarHeaderAndBody = ({
     const column = caldendarBody.appendChild(
       createNewElement({
         elementTag: "div",
-        attributes: { className: "column" },
+        attributes: { class: "column" },
       })
     );
 
@@ -44,7 +44,7 @@ export const createWeekCalendarHeaderAndBody = ({
             innerHTML: `${dayOfWeek}<span>${dayOfMonth}</span>`,
             attributes: {
               dateTime: formattedColumnDate,
-              className:
+              class:
                 "cell header-cell " +
                 (formattedColumnDate === formattedCurrentDate
                   ? " current-day"
@@ -60,7 +60,7 @@ export const createWeekCalendarHeaderAndBody = ({
         createNewElement({
           elementTag: "div",
           attributes: {
-            className: "cell",
+            class: "cell",
           },
         })
       );

@@ -4,7 +4,7 @@ import { DAY_NAMES } from "../constants.js";
 export const createMonthCalendarHeader = (daysCount) => {
   const header = createNewElement({
     elementTag: "div",
-    attributes: { className: "header" },
+    attributes: { class: "header" },
   });
 
   for (let i = 1; i <= daysCount; i++) {
@@ -12,9 +12,7 @@ export const createMonthCalendarHeader = (daysCount) => {
       createNewElement({
         elementTag: "div",
         innerHTML: `<h3>${DAY_NAMES[i][0].toUpperCase()}</h3>`,
-        attributes: {
-          className: "cell header-cell",
-        },
+        attributes: { class: "cell header-cell" },
       })
     );
   }

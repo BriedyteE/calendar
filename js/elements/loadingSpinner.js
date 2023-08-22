@@ -3,13 +3,13 @@ import { createNewElement } from "../utils/elements.js";
 export const createLoadingSpinner = (containerClassName) => {
   const spinnerContainer = createNewElement({
     elementTag: "div",
-    attributes: { className: containerClassName },
+    attributes: { class: containerClassName },
   });
 
   spinnerContainer.appendChild(
     createNewElement({
       elementTag: "div",
-      attributes: { className: "loading-spinner" },
+      attributes: { class: "loading-spinner" },
     })
   );
 

@@ -11,14 +11,14 @@ export const createMonthCalendarBody = ({
 }) => {
   const calendarBody = createNewElement({
     elementTag: "div",
-    attributes: { className: "body" },
+    attributes: { class: "body" },
   });
 
   for (let i = 0; i < rowsCount; i++) {
     const row = calendarBody.appendChild(
       createNewElement({
         elementTag: "div",
-        attributes: { className: "row" },
+        attributes: { class: "row" },
       })
     );
 
@@ -52,7 +52,7 @@ export const createMonthCalendarBody = ({
           elementTag: "div",
           innerHTML: `<time datetime="${cellDate.formattedDate}">${cellDate.dayOfMonth}</time>`,
           attributes: {
-            className: getCellClass(),
+            class: getCellClass(),
           },
         })
       );

@@ -3,7 +3,7 @@ import { createNewElement } from "../utils/elements.js";
 export const createHoursColumn = (hourCount) => {
   const column = createNewElement({
     elementTag: "div",
-    attributes: { className: "hours" },
+    attributes: { class: "hours" },
   });
 
   for (let i = 0; i < hourCount; i++) {
@@ -14,7 +14,7 @@ export const createHoursColumn = (hourCount) => {
         elementTag: "div",
         innerHTML: i ? `<span>${time}</span>` : "",
         attributes: {
-          className: i ? "cell hour-cell" : "cell corner-cell",
+          class: i ? "cell hour-cell" : "cell corner-cell",
         },
       })
     );

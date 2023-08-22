@@ -542,6 +542,7 @@ select {
   font-weight: 200;
   cursor: pointer;
   overflow: hidden;
+  transition: all 0.2s;
 }
 
 .main-calendar.week .event {
@@ -556,6 +557,11 @@ select {
 
 .event.open {
   box-shadow: rgba(0, 0, 0, 0.281) 0px 4px 4px 0px;
+}
+
+.main-calendar.month .event.open {
+  box-shadow: rgba(0, 0, 0, 0.708) 0px 4px 4px 0px;
+  margin: 2px 0;
 }
 
 .spinner-container {

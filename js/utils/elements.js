@@ -11,6 +11,9 @@ export const createNewElement = ({
     newElement.textContent = textContent;
   }
 
-  Object.assign(newElement, attributes);
+  Object.keys(attributes).forEach((attributeKey) => {
+    newElement.setAttribute(attributeKey, attributes[attributeKey]);
+  });
+
   return newElement;
 };
