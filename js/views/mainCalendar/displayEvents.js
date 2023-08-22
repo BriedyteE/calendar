@@ -1,9 +1,9 @@
-import { addEventSlot } from "../index.js";
+import { addEventSlot, displayEventModal } from "../index.js";
+import { getMainCalendarMode, getFetchedEvents } from "../../state.js";
 
-import { getFetchedEvents } from "../../handlers/handleEvents.js";
-
-export const displayEvents = ({ onTimeSlotClick, calendarMode }) => {
+export const displayEvents = () => {
   const fetchedEvents = getFetchedEvents();
+  const calendarMode = getMainCalendarMode();
   if (fetchedEvents) {
     document.querySelectorAll(".main-calendar time").forEach((timeCell) => {
       const dayEvents = fetchedEvents[timeCell.getAttribute("datetime")];
@@ -13,7 +13,7 @@ export const displayEvents = ({ onTimeSlotClick, calendarMode }) => {
           event,
           isSavedEvent: true,
           calendarMode,
-          onClick: onTimeSlotClick,
+          onClick: () => displayEventModal(event),
         });
       });
     });

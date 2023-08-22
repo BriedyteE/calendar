@@ -14,7 +14,7 @@ export const createMonthCalendarBody = ({
     attributes: { class: "body" },
   });
 
-  for (let i = 0; i < rowsCount; i++) {
+  for (let rowIndex = 0; rowIndex < rowsCount; rowIndex++) {
     const row = calendarBody.appendChild(
       createNewElement({
         elementTag: "div",
@@ -22,13 +22,16 @@ export const createMonthCalendarBody = ({
       })
     );
 
-    for (let j = 1; j <= weekDaysCount; j++) {
+    for (let cellIndex = 1; cellIndex <= weekDaysCount; cellIndex++) {
       const monthStart = getDateData(monthStartDate);
       const cellDate = getDateData(
         new Date(
           monthStart.year,
           monthStart.month,
-          monthStart.dayOfMonth - monthStart.dayOfWeek + j + weekDaysCount * i
+          monthStart.dayOfMonth -
+            monthStart.dayOfWeek +
+            cellIndex +
+            weekDaysCount * rowIndex
         )
       );
 

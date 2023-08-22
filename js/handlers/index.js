@@ -1,22 +1,30 @@
-import { closeEventModal } from "./closeEventModal.js";
-import { validateSelectedTime } from "./validateSelectedTime.js";
-import { getCellByDate } from "./getCellByDate.js";
+import {
+  closeEventModal,
+  onDateTimeChange,
+  onDelete,
+  onSubmit,
+  validateTimeInputs,
+} from "./handleModal.js";
+import { navigateToSelectedDate } from "./handleNavigation.js";
+import { onMainCalendarCellClick } from "./onMainCalendarCellClick.js";
 
 import {
   saveEvent,
   deleteEvent,
   fetchEvents,
   updateEvent,
-  getFetchedEvents,
 } from "./handleEvents.js";
 
 export {
   closeEventModal,
-  validateSelectedTime,
-  getCellByDate,
-  getFetchedEvents,
+  onDateTimeChange,
+  validateTimeInputs,
+  onDelete,
+  onSubmit,
   fetchEvents,
   saveEvent,
   updateEvent,
   deleteEvent,
+  navigateToSelectedDate,
+  onMainCalendarCellClick,
 };

@@ -1,12 +1,18 @@
-// import { closeModalOnEsc } from "./closeEventModal.js";
-import { validateSelectedTime } from "../../handlers/index.js";
+import {
+  validateTimeInputs,
+  onDateTimeChange,
+  closeEventModal,
+  onDelete,
+  onSubmit,
+} from "../../handlers/index.js";
 
 export const displayEventModal = ({
-  event: { date, startTime, endTime, title = "", description = "", id = null },
-  onDateTimeChange,
-  onClose,
-  onSubmit,
-  onDelete,
+  date,
+  startTime,
+  endTime,
+  title = "",
+  description = "",
+  id = null,
 }) => {
   const modalWrapper = document.querySelector(".modal-backdrop");
   const form = modalWrapper.querySelector("form");
@@ -39,7 +45,7 @@ export const displayEventModal = ({
   };
 
   const closeModal = () => {
-    onClose({ isEventSaved: !!id });
+    closeEventModal({ isEventSaved: !!id });
   };
 
   modalWrapper.classList.add("visible");
@@ -61,7 +67,7 @@ export const displayEventModal = ({
 
   startTimeInput.onchange = () => {
     submitButton.removeAttribute("disabled");
-    const isValid = validateSelectedTime();
+    const isValid = validateTimeInputs();
     if (!isValid) {
       submitButton.setAttribute("disabled", true);
       return;
@@ -72,7 +78,7 @@ export const displayEventModal = ({
 
   endTimeInput.onchange = () => {
     submitButton.removeAttribute("disabled");
-    const isValid = validateSelectedTime();
+    const isValid = validateTimeInputs();
     if (!isValid) {
       submitButton.setAttribute("disabled", true);
       return;

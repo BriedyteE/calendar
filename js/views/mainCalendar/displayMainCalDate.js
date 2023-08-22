@@ -1,10 +1,12 @@
-import { MAIN_CALENDAR_MODES, MONTHS } from "../../constants.js";
+import { MONTHS } from "../../constants.js";
+import { getMainCalendarMode } from "../../state.js";
 import { getMonthDateText, getDateData } from "../../utils/dateTime.js";
 
-export const displayMainCalDate = (firstDate, calendatMode) => {
+export const displayMainCalDate = (firstDate) => {
   const dateContainer = document.querySelector(".date.main");
+  const isWeekCalendar = getMainCalendarMode();
 
-  if (calendatMode === MAIN_CALENDAR_MODES.Week) {
+  if (isWeekCalendar) {
     const {
       year: startYear,
       month: startMonth,

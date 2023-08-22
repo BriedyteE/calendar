@@ -2,26 +2,22 @@ import {
   calculateEventDuration,
   convertInputTimeToSeconds,
 } from "../../utils/dateTime.js";
-import { createEventSlot } from "../../elements/eventSlot.js";
-import { MAIN_CALENDAR_MODES } from "../../constants.js";
+import { isWeekCalendarMode } from "../../utils/calendars.js";
+import { createEventSlot } from "../../elements/index.js";
+import { displayEventModal } from "../../views/index.js";
 
-export const addEventSlot = ({
-  event,
-  isModalOpen = false,
-  calendarMode,
-  onClick,
-}) => {
+export const addEventSlot = ({ event, isModalOpen = false }) => {
   document.querySelector(".event.open")?.remove();
-
   const mainCalendar = document.querySelector(".main-calendar");
-  const isWeekCalendar = calendarMode === MAIN_CALENDAR_MODES.Week;
+  const isWeekCalendar = isWeekCalendarMode();
+
   const { date, startTime, endTime, title } = event;
 
   const [startHour, startSeconds] = startTime.split(":");
   const eventDurationInSeconds = calculateEventDuration(startTime, endTime);
 
   const eventSlot = createEventSlot({
-    onClick: () => onClick(event),
+    onClick: () => displayEventModal(event),
     isModalOpen,
     title: title ? `${title}  (${startTime})` : `No title (${startTime})`,
     height: isWeekCalendar ? `${(eventDurationInSeconds * 100) / 60}%` : null,
